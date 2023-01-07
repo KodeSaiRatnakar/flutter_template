@@ -8,7 +8,7 @@ late ZeroNet zeroNet;
 
 const siteAddr = String.fromEnvironment(
   'SITE_ADDR',
-  defaultValue: '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d',
+  defaultValue: '15UYrA7aXr2Nto1Gg4yWXpY3EAJwafMTNk',
 );
 
 void main() async {
