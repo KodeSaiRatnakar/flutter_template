@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/commons.dart';
+import 'package:flutter_template/controllers/themeControlle.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
 import 'package:get/get.dart';
 
@@ -40,10 +41,14 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (false) {
-        return const CircularProgressIndicator();
-      }
       switch (uiController.currentRoute.value) {
+        case Routes.ShowProgressIndicator:
+          return Scaffold(
+              backgroundColor:
+                  threadItThemeController.currentTheme.value.backGroundColor,
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ));
         case Routes.Home:
           return HomePage();
         case Routes.TopicDetailScreen:

@@ -15,6 +15,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size mediaSize = MediaQuery.of(context).size;
     ThemeData theme = Theme.of(context);
+    TextEditingController searchController = TextEditingController();
 
     return Scaffold(
       backgroundColor: const Color(0xff2e2b32),
@@ -30,18 +31,24 @@ class HomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  height: mediaSize.height * 0.07,
-                  width: mediaSize.width * 0.5,
-                  color:
-                      threadItThemeController.currentTheme.value.primaryColor,
-                  child: const Center(
-                    child: Text(
-                      "ThreadIt",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                GestureDetector(
+                  onTap: () {
+                    zeroNetController.loadTopicWidgetData();
+                    uiController.changeListSorting(ListSorting.Home);
+                  },
+                  child: Container(
+                    height: mediaSize.height * 0.07,
+                    width: mediaSize.width * 0.5,
+                    color:
+                        threadItThemeController.currentTheme.value.primaryColor,
+                    child: const Center(
+                      child: Text(
+                        "ThreadIt",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
@@ -49,6 +56,9 @@ class HomePage extends StatelessWidget {
                   children: [
                     IconButton(
                         onPressed: () {
+                          if (uiController.isSearchBarSelected.value) {
+                            searchController.clear();
+                          }
                           uiController.isSearchBarSelected.value =
                               !(uiController.isSearchBarSelected.value);
                         },
@@ -74,6 +84,8 @@ class HomePage extends StatelessWidget {
                         : 0,
                     duration: const Duration(milliseconds: 200),
                     child: TextField(
+                      controller: searchController,
+                      style: TextStyle(color: Colors.white, fontSize: 15),
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -112,12 +124,14 @@ class HomePage extends StatelessWidget {
                 PinnedFeatures(
                   mediaSize: mediaSize,
                   title: "Features",
-                  theme: theme,
+                  isSelected:
+                      uiController.listSorting.value == ListSorting.Features,
                 ),
                 PinnedFeatures(
                   mediaSize: mediaSize,
                   title: "Bugs",
-                  theme: theme,
+                  isSelected:
+                      uiController.listSorting.value == ListSorting.Bugs,
                 )
               ],
             ),
@@ -156,12 +170,13 @@ Widget headerIcon(
 class PinnedFeatures extends StatelessWidget {
   final Size mediaSize;
   final String title;
-  final ThemeData theme;
+
+  final bool isSelected;
 
   const PinnedFeatures(
       {required this.mediaSize,
       required this.title,
-      required this.theme,
+      required this.isSelected,
       super.key});
 
   @override
@@ -169,81 +184,89 @@ class PinnedFeatures extends StatelessWidget {
     return Container(
       width: mediaSize.width * 0.45,
       decoration: BoxDecoration(
+          border: isSelected
+              ? Border.all(color: Colors.white, width: 2)
+              : Border.all(color: Colors.transparent),
           color: threadItThemeController.currentTheme.value.primaryColor,
           borderRadius: BorderRadius.circular(10)),
       child: Center(
-        child: Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.white),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white),
+                  ),
                 ),
-              ),
-              Transform.rotate(
-                angle: 0.9,
-                child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.push_pin_outlined,
-                      size: 20,
-                    )),
-              ),
-            ],
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "2023",
-                  style: TextStyle(
-                      color: theme.backgroundColor,
-                      fontWeight: FontWeight.w500),
+                Transform.rotate(
+                  angle: 0.9,
+                  child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.push_pin_outlined,
+                        size: 20,
+                      )),
                 ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(right: 0.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "2023",
+                    style: TextStyle(
+                        color: Color(0xff83EFFF), fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(right: 0.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
                         backgroundColor:
-                            MaterialStatePropertyAll(theme.backgroundColor)),
-                    onPressed: () {
-                      switch (title) {
-                        case "Features":
-                          {
-                            zeroNetController.loadTopicWidgetData(
-                                id: featuresRequest);
-                            break;
-                          }
-                        case "Bugs":
-                          {
-                            zeroNetController.loadTopicWidgetData(
-                                id: bugsTopicId);
-                            break;
-                          }
-                      }
-                    },
-                    child: const Text(
-                      "Open",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  ))
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          )
-        ]),
+                            MaterialStatePropertyAll(Color(0xff83EFFF)),
+                      ),
+                      onPressed: () {
+                        switch (title) {
+                          case "Features":
+                            {
+                              zeroNetController.loadTopicWidgetData(
+                                  id: featuresRequest);
+                              uiController
+                                  .changeListSorting(ListSorting.Features);
+                              break;
+                            }
+                          case "Bugs":
+                            {
+                              zeroNetController.loadTopicWidgetData(
+                                  id: bugsTopicId);
+                              uiController.changeListSorting(ListSorting.Bugs);
+                              break;
+                            }
+                        }
+                      },
+                      child: const Text(
+                        "Open",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ))
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            )
+          ]),
+        ),
       ),
     );
   }
@@ -312,15 +335,6 @@ class Topic extends StatelessWidget {
                   uiController.selectedTopicIndex.value = index;
                   uiController.changeRoute(Routes.TopicDetailScreen);
                   //  context.go("/detailedPost", extra: widget.topicData);
-                  /*
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TopicDetailScreen(
-                        topic: widget.topicData,
-                      ),
-                    ),
-                  );*/
                 },
                 child: Text(
                   topicData.title,
@@ -340,6 +354,7 @@ class Topic extends StatelessWidget {
                   ),
                 ),
               ),
+              Text(topicData.sticky != 0 ? "yes" : ""),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 8.0,
@@ -452,7 +467,7 @@ class Topic extends StatelessWidget {
 
 Widget addPost({required ThemeData theme}) {
   return FloatingActionButton(
-      backgroundColor: theme.primaryColor,
+      backgroundColor: threadItThemeController.currentTheme.value.primaryColor,
       onPressed: () {},
       child: const Icon(Icons.add));
 }

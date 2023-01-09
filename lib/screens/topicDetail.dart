@@ -34,6 +34,8 @@ class TopicDetailScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           uiController.currentRoute(Routes.Home);
+                          zeroNetController.loadTopicWidgetData();
+                          uiController.changeListSorting(ListSorting.Home);
                         },
                         child: Container(
                           height: mediaSize.height * 0.07,
@@ -66,7 +68,7 @@ class TopicDetailScreen extends StatelessWidget {
                         uiController.currentRoute.value = Routes.Home;
                       },
                       child: Text(
-                        "Home /",
+                        uiController.listSorting.value.pathString,
                         style: threadItThemeController
                             .currentTheme.value.cardHeadingTextStyle,
                         textAlign: TextAlign.start,
@@ -74,7 +76,7 @@ class TopicDetailScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: mediaSize.width * 0.7,
+                      width: mediaSize.width * 0.45,
                       child: Text(
                         topic.title,
                         style: theme.textTheme.bodyLarge
