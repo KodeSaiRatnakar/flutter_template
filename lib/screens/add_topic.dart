@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
+import 'package:get/get.dart';
 
 class AddTopicData extends StatelessWidget {
-  const AddTopicData({super.key});
+  AddTopicData({super.key});
+
+  var items = ["General", "Features", "Bugs"];
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,71 @@ class AddTopicData extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Obx(
+                  () => SizedBox(
+                    width: 150,
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: theme.primaryColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: theme.mainColor, width: 2),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: theme.primaryColor, width: 2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: theme.primaryColor, width: 2),
+                        ),
+                      ),
+                      dropdownColor: threadItThemeController
+                          .currentTheme.value.backGroundColor,
+                      hint: const Text(
+                        "General",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      value: uiController.dropdownvalue.value,
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      items: items.map(
+                        (String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(
+                              items,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (String? newValue) {
+                        uiController.dropdownvalue.value =
+                            newValue ?? uiController.dropdownvalue.value;
+                      },
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Rules",
+                    style: theme.cardBodyMedium,
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                )
+              ],
+            ),
             TextField(
               style: theme.cardHeadingTextStyle,
               keyboardType: TextInputType.multiline,
@@ -32,7 +100,7 @@ class AddTopicData extends StatelessWidget {
               maxLines: 3,
               cursorColor: theme.mainColor,
               decoration: InputDecoration(
-                hintText: "Add Topic T itle",
+                hintText: "Add Topic Title",
                 hintStyle: theme.cardHeadingTextStyle,
                 border: const OutlineInputBorder(
                   borderSide: BorderSide.none,

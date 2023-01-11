@@ -41,6 +41,7 @@ class UiController extends GetxController {
   final isSearchBarSelected = false.obs;
   final selectedTopicIndex = 0.obs;
   final listSorting = ListSorting.home.obs;
+  final dropdownvalue = "General".obs;
 
   void changeRoute(Routes route) {
     currentRoute.value = route;
@@ -53,6 +54,7 @@ class UiController extends GetxController {
 
 enum Routes {
   home,
+
   topicList,
   topicView,
   topicDetailScreen,
