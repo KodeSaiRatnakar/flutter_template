@@ -8,15 +8,16 @@ class AddTopicData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThreadItThemes theme = threadItThemeController.currentTheme.value;
-    Size mediaSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.primaryColor,
         leading: IconButton(
-            onPressed: () {
-              uiController.currentRoute.value = Routes.Home;
-            },
-            icon: Icon(Icons.arrow_back)),
+          onPressed: () {
+            uiController.currentRoute.value = Routes.home;
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       backgroundColor: theme.backGroundColor,
       body: Padding(
@@ -31,9 +32,12 @@ class AddTopicData extends StatelessWidget {
               maxLines: 3,
               cursorColor: theme.mainColor,
               decoration: InputDecoration(
-                  hintText: "Add Topic T itle",
-                  hintStyle: theme.cardHeadingTextStyle,
-                  border: OutlineInputBorder(borderSide: BorderSide.none)),
+                hintText: "Add Topic T itle",
+                hintStyle: theme.cardHeadingTextStyle,
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+              ),
             ),
             Container(
               decoration: BoxDecoration(color: theme.cardColor),
@@ -44,9 +48,12 @@ class AddTopicData extends StatelessWidget {
                 maxLines: 15,
                 cursorColor: theme.mainColor,
                 decoration: InputDecoration(
-                    hintText: "Add message",
-                    hintStyle: theme.cardBodyTextStyle,
-                    border: OutlineInputBorder(borderSide: BorderSide.none)),
+                  hintText: "Add message",
+                  hintStyle: theme.cardBodyTextStyle,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
             ),
             const SizedBox(
@@ -61,7 +68,9 @@ class AddTopicData extends StatelessWidget {
                 child: Text(
                   "Submit Comment",
                   style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w600),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

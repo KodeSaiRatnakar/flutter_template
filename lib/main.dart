@@ -41,29 +41,38 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      switch (uiController.currentRoute.value) {
-        case Routes.ShowProgressIndicator:
-          return Scaffold(
+    return Obx(
+      () {
+        switch (uiController.currentRoute.value) {
+          case Routes.showProgressIndicator:
+            return Scaffold(
               backgroundColor:
                   threadItThemeController.currentTheme.value.backGroundColor,
               body: const Center(
                 child: CircularProgressIndicator(),
-              ));
-        case Routes.Home:
-          return HomePage();
-        case Routes.TopicDetailScreen:
-          return TopicDetailScreen(
-              topic:
-                  topicWidgetDataList[uiController.selectedTopicIndex.value]);
-        case Routes.AddTopicData:
-          {
-            return AddTopicData();
-          }
-        default:
-          return Container();
-      }
-    });
+              ),
+            );
+          case Routes.home:
+            {
+              return HomePage();
+            }
+          case Routes.topicDetailScreen:
+            {
+              return TopicDetailScreen(
+                  topic: topicWidgetDataList[
+                      uiController.selectedTopicIndex.value]);
+            }
+          case Routes.addTopicData:
+            {
+              return AddTopicData();
+            }
+          default:
+            {
+              return Container();
+            }
+        }
+      },
+    );
   }
 }
 

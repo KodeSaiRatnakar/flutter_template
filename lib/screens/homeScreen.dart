@@ -21,40 +21,43 @@ class HomePage extends StatelessWidget {
       backgroundColor: const Color(0xff2e2b32),
       floatingActionButton: addPost(theme: theme),
       body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    zeroNetController.loadTopicWidgetData();
-                    uiController.changeListSorting(ListSorting.Home);
-                  },
-                  child: Container(
-                    height: mediaSize.height * 0.07,
-                    width: mediaSize.width * 0.5,
-                    color:
-                        threadItThemeController.currentTheme.value.primaryColor,
-                    child: const Center(
-                      child: Text(
-                        "ThreadIt",
-                        style: TextStyle(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      zeroNetController.loadTopicWidgetData();
+                      uiController.changeListSorting(
+                        ListSorting.home,
+                      );
+                    },
+                    child: Container(
+                      height: mediaSize.height * 0.07,
+                      width: mediaSize.width * 0.5,
+                      color: threadItThemeController
+                          .currentTheme.value.primaryColor,
+                      child: const Center(
+                        child: Text(
+                          "ThreadIt",
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
+                  Row(
+                    children: [
+                      IconButton(
                         onPressed: () {
                           if (uiController.isSearchBarSelected.value) {
                             searchController.clear();
@@ -69,129 +72,142 @@ class HomePage extends StatelessWidget {
                           Icons.search,
                           size: 30,
                           color: themeColor,
-                        )),
-                    headerIcon(
-                        function: () {},
-                        iconData: Icons.language_outlined,
-                        color: themeColor)
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Obx(
-                () {
-                  return AnimatedContainer(
-                    curve: Curves.linear,
-                    height: uiController.isSearchBarSelected.value
-                        ? searchBarMaxHeight
-                        : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (text) {
-                        uiController.searchStr.value = text;
-                      },
-                      style: const TextStyle(color: Colors.white, fontSize: 15),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: uiController.isSearchBarSelected.value
-                                    ? themeColor
-                                    : Colors.transparent,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(7)),
-                        errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: uiController.isSearchBarSelected.value
-                                    ? themeColor
-                                    : Colors.transparent,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(7)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: uiController.isSearchBarSelected.value
-                                  ? themeColor
-                                  : Colors.transparent,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: uiController.isSearchBarSelected.value
-                                  ? themeColor
-                                  : Colors.transparent,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(7),
                         ),
                       ),
-                    ),
-                  );
+                      headerIcon(
+                        function: () {},
+                        iconData: Icons.language_outlined,
+                        color: themeColor,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Obx(
+                  () {
+                    return AnimatedContainer(
+                      curve: Curves.linear,
+                      height: uiController.isSearchBarSelected.value
+                          ? searchBarMaxHeight
+                          : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (text) {
+                          uiController.searchStr.value = text;
+                        },
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: uiController.isSearchBarSelected.value
+                                  ? themeColor
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: uiController.isSearchBarSelected.value
+                                    ? themeColor
+                                    : Colors.transparent,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: uiController.isSearchBarSelected.value
+                                  ? themeColor
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: uiController.isSearchBarSelected.value
+                                  ? themeColor
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Obx(
+                () {
+                  switch (uiController.listSorting.value) {
+                    case ListSorting.home:
+                      {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            PinnedFeatures(
+                              mediaSize: mediaSize,
+                              title: "Features",
+                              isSelected: uiController.listSorting.value ==
+                                  ListSorting.features,
+                            ),
+                            PinnedFeatures(
+                              mediaSize: mediaSize,
+                              title: "Bugs",
+                              isSelected: uiController.listSorting.value ==
+                                  ListSorting.bugs,
+                            )
+                          ],
+                        );
+                      }
+                    default:
+                      {
+                        List<String> pathString = uiController
+                            .listSorting.value.pathString
+                            .split(",");
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              pathString[0],
+                              style: threadItThemeController
+                                  .currentTheme.value.cardHeadingTextStyle
+                                  .copyWith(fontSize: 25),
+                              textAlign: TextAlign.start,
+                            ),
+                            Text(
+                              " > ${pathString[1]}",
+                              style: threadItThemeController
+                                  .currentTheme.value.cardHeadingTextStyle
+                                  .copyWith(
+                                color: Colors.white,
+                                fontSize: 25,
+                              ),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        );
+                      }
+                  }
                 },
               ),
-            ),
-            Obx(
-              () {
-                switch (uiController.listSorting.value) {
-                  case ListSorting.Home:
-                    {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PinnedFeatures(
-                            mediaSize: mediaSize,
-                            title: "Features",
-                            isSelected: uiController.listSorting.value ==
-                                ListSorting.Features,
-                          ),
-                          PinnedFeatures(
-                            mediaSize: mediaSize,
-                            title: "Bugs",
-                            isSelected: uiController.listSorting.value ==
-                                ListSorting.Bugs,
-                          )
-                        ],
-                      );
-                    }
-                  default:
-                    {
-                      List<String> pathString =
-                          uiController.listSorting.value.pathString.split(",");
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            pathString[0],
-                            style: threadItThemeController
-                                .currentTheme.value.cardHeadingTextStyle
-                                .copyWith(fontSize: 25),
-                            textAlign: TextAlign.start,
-                          ),
-                          Text(
-                            " > ${pathString[1]}",
-                            style: threadItThemeController
-                                .currentTheme.value.cardHeadingTextStyle
-                                .copyWith(color: Colors.white, fontSize: 25),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      );
-                    }
-                }
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TopicList(
-              mediaSize: mediaSize,
-              theme: theme,
-              topicWidgetData: topicWidgetDataList,
-            )
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+              TopicList(
+                mediaSize: mediaSize,
+                theme: theme,
+                topicWidgetData: topicWidgetDataList,
+              )
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }
@@ -238,64 +254,72 @@ class PinnedFeatures extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.white),
+                    ),
                   ),
-                ),
-                Transform.rotate(
-                  angle: 0.9,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.push_pin_outlined,
-                        size: 20,
-                      )),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "2023",
-                    style: TextStyle(
-                        color: Color(0xff83EFFF), fontWeight: FontWeight.w500),
+                  Transform.rotate(
+                    angle: 0.9,
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.push_pin_outlined,
+                          size: 20,
+                        )),
                   ),
-                ),
-                Padding(
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "2023",
+                      style: TextStyle(
+                          color: Color(0xff83EFFF),
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.only(right: 0.0),
                     child: ElevatedButton(
                       style: const ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(Color(0xff83EFFF)),
+                        backgroundColor: MaterialStatePropertyAll(
+                          Color(0xff83EFFF),
+                        ),
                       ),
                       onPressed: () {
                         switch (title) {
                           case "Features":
                             {
                               zeroNetController.loadTopicWidgetData(
-                                  id: featuresRequest);
-                              uiController
-                                  .changeListSorting(ListSorting.Features);
+                                id: featuresRequest,
+                              );
+                              uiController.changeListSorting(
+                                ListSorting.features,
+                              );
                               break;
                             }
                           case "Bugs":
                             {
                               zeroNetController.loadTopicWidgetData(
-                                  id: bugsTopicId);
-                              uiController.changeListSorting(ListSorting.Bugs);
+                                id: bugsTopicId,
+                              );
+                              uiController.changeListSorting(
+                                ListSorting.bugs,
+                              );
                               break;
                             }
                         }
@@ -303,15 +327,17 @@ class PinnedFeatures extends StatelessWidget {
                       child: const Text(
                         "Open",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                    ))
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            )
-          ]),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10)
+            ],
+          ),
         ),
       ),
     );
@@ -332,15 +358,16 @@ class TopicList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-          itemCount: topicWidgetData.length,
-          itemBuilder: (context, index) {
-            return Topic(
-              mediaSize: mediaSize,
-              theme: theme,
-              topicData: topicWidgetData[index],
-              index: index,
-            );
-          }),
+        itemCount: topicWidgetData.length,
+        itemBuilder: (context, index) {
+          return Topic(
+            mediaSize: mediaSize,
+            theme: theme,
+            topicData: topicWidgetData[index],
+            index: index,
+          );
+        },
+      ),
     );
   }
 }
@@ -379,7 +406,7 @@ class Topic extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   uiController.selectedTopicIndex.value = index;
-                  uiController.changeRoute(Routes.TopicDetailScreen);
+                  uiController.changeRoute(Routes.topicDetailScreen);
                 },
                 child: Text(
                   topicData.title,
@@ -434,29 +461,32 @@ class Topic extends StatelessWidget {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(13),
-                            border: Border.all(
-                                color: onLikeButtonHover
-                                    ? Colors.green
-                                    : threadItThemeController
-                                        .currentTheme.value.primaryColor,
-                                width: 1),
-                            color: false ? Colors.green : Colors.transparent),
+                          borderRadius: BorderRadius.circular(13),
+                          border: Border.all(
+                            color: onLikeButtonHover
+                                ? Colors.green
+                                : threadItThemeController
+                                    .currentTheme.value.primaryColor,
+                            width: 1,
+                          ),
+                          color: false ? Colors.green : Colors.transparent,
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 1, horizontal: 16),
                           child: Center(
-                            child: Text((topicData.votes + tempLike).toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                )
+                            child: Text(
+                              (topicData.votes + tempLike).toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
 
-                                //  onLikeButtonHover || widget.topic.isLiked
-                                //     ? widget.theme.textTheme.bodyMedium?.copyWith(
-                                //         fontSize: 14, color: Colors.white)
-                                //     : widget.theme.textTheme.bodyMedium
-                                //         ?.copyWith(fontSize: 14),
-                                ),
+                              //  onLikeButtonHover || widget.topic.isLiked
+                              //     ? widget.theme.textTheme.bodyMedium?.copyWith(
+                              //         fontSize: 14, color: Colors.white)
+                              //     : widget.theme.textTheme.bodyMedium
+                              //         ?.copyWith(fontSize: 14),
+                            ),
                           ),
                         ),
                       ),
@@ -470,19 +500,25 @@ class Topic extends StatelessWidget {
                         text: TextSpan(
                           text: '',
                           style: const TextStyle(
-                              fontWeight: FontWeight.w300, color: Colors.black),
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black,
+                          ),
                           children: <TextSpan>[
                             TextSpan(
-                                text: topicData.commentsNum.toString(),
-                                style: threadItThemeController
-                                    .currentTheme.value.cardBodyMedium),
+                              text: topicData.commentsNum.toString(),
+                              style: threadItThemeController
+                                  .currentTheme.value.cardBodyMedium,
+                            ),
                             TextSpan(
-                                text: topicData.commentsNum > 1
-                                    ? " comments "
-                                    : " comment ",
-                                style: threadItThemeController
-                                    .currentTheme.value.cardBodyMedium
-                                    .copyWith(fontSize: 13)),
+                              text: topicData.commentsNum > 1
+                                  ? " comments "
+                                  : " comment ",
+                              style: threadItThemeController
+                                  .currentTheme.value.cardBodyMedium
+                                  .copyWith(
+                                fontSize: 13,
+                              ),
+                            ),
                             topicData.commentsNum == 0
                                 ? const TextSpan()
                                 : TextSpan(
@@ -491,7 +527,10 @@ class Topic extends StatelessWidget {
                                         .modifiedStrForComment,
                                     style: threadItThemeController.currentTheme
                                         .value.commentOrLikeTimeStyle
-                                        .copyWith(fontSize: 13)),
+                                        .copyWith(
+                                      fontSize: 13,
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
@@ -512,9 +551,12 @@ class Topic extends StatelessWidget {
 
 Widget addPost({required ThemeData theme}) {
   return FloatingActionButton(
-      backgroundColor: threadItThemeController.currentTheme.value.primaryColor,
-      onPressed: () {
-        uiController.currentRoute.value = Routes.AddTopicData;
-      },
-      child: const Icon(Icons.add));
+    backgroundColor: threadItThemeController.currentTheme.value.primaryColor,
+    onPressed: () {
+      uiController.currentRoute.value = Routes.addTopicData;
+    },
+    child: const Icon(
+      Icons.add,
+    ),
+  );
 }

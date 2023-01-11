@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 
 ThemeController threadItThemeController = Get.put(ThemeController());
 
-enum ThreadItThemes { DarkTheme, LightTheme }
+enum ThreadItThemes { darkTheme, lightTheme }
 
 extension ThemeExt on ThreadItThemes {
   Color get mainColor {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const Color(0xff83EFFF);
       default:
         return const Color(0xff2e5a61);
@@ -17,7 +17,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get primaryColor {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const Color(0xff2e5a61);
       default:
         return const Color(0xff2e5a61);
@@ -26,7 +26,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get cardColor {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const Color(0xff373844);
       default:
         return const Color(0xff2e5a61);
@@ -35,7 +35,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get backGroundColor {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const Color(0xff2e2b32);
       default:
         return const Color(0xff2e5a61);
@@ -44,91 +44,107 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get cardHeadingTextStyle {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const TextStyle(
-            color: Color(0xff83EFFF),
-            fontWeight: FontWeight.w500,
-            fontSize: 18);
+          color: Color(0xff83EFFF),
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
+        );
       default:
         return const TextStyle(
-            color: Color(0xff373844), fontWeight: FontWeight.bold);
+          color: Color(0xff373844),
+          fontWeight: FontWeight.bold,
+        );
     }
   }
 
   TextStyle get cardBodyTextStyle {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const TextStyle(
-            color: Color(0xffe1e1e1), fontWeight: FontWeight.w400);
+          color: Color(0xffe1e1e1),
+          fontWeight: FontWeight.w400,
+        );
       default:
         return const TextStyle(
-            color: Color(0xff373844),
-            fontSize: 16,
-            fontWeight: FontWeight.w600);
+          color: Color(0xff373844),
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        );
     }
   }
 
   TextStyle get cardBodyMedium {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const TextStyle(
-            color: Color(
-              0xffe1e1e1,
-            ),
-            fontWeight: FontWeight.w500,
-            fontSize: 14);
+          color: Color(
+            0xffe1e1e1,
+          ),
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+        );
       default:
         return const TextStyle(
-            color: Color(0xff373844),
-            fontSize: 15,
-            fontWeight: FontWeight.w600);
+          color: Color(0xff373844),
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        );
     }
   }
 
   TextStyle get likeButtonDisabledTextStyle {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const TextStyle(
-            color: Color(0xff83EFFF),
-            fontWeight: FontWeight.w500,
-            fontSize: 14);
+          color: Color(0xff83EFFF),
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+        );
       default:
         return const TextStyle(
-            color: Color(0xff373844),
-            fontSize: 15,
-            fontWeight: FontWeight.w600);
+          color: Color(0xff373844),
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        );
     }
   }
 
   TextStyle get commentUserTextStyle {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const TextStyle(
-            color: Color(0xff83EFFF),
-            fontWeight: FontWeight.w400,
-            fontSize: 14);
+          color: Color(0xff83EFFF),
+          fontWeight: FontWeight.w400,
+          fontSize: 14,
+        );
       default:
         return const TextStyle(
-            color: Color(0xff373844),
-            fontSize: 15,
-            fontWeight: FontWeight.w400);
+          color: Color(0xff373844),
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        );
     }
   }
 
   TextStyle get commentOrLikeTimeStyle {
     switch (this) {
-      case ThreadItThemes.DarkTheme:
+      case ThreadItThemes.darkTheme:
         return const TextStyle(
-            color: Colors.white38, fontSize: 10, fontWeight: FontWeight.w400);
+          color: Colors.white38,
+          fontSize: 10,
+          fontWeight: FontWeight.w400,
+        );
       default:
         return const TextStyle(
-            color: Color(0xff373844),
-            fontSize: 15,
-            fontWeight: FontWeight.w400);
+          color: Color(0xff373844),
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        );
     }
   }
 }
 
 class ThemeController extends GetxController {
-  var currentTheme = ThreadItThemes.DarkTheme.obs;
+  var currentTheme = ThreadItThemes.darkTheme.obs;
 }

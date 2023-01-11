@@ -85,7 +85,6 @@ class TopicBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: mediaSize.height * 0.45,
       width: double.infinity,
       decoration: BoxDecoration(
         color: threadItThemeController.currentTheme.value.cardColor,
@@ -213,40 +212,54 @@ class PathButtons extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            uiController.currentRoute(Routes.Home);
+            uiController.currentRoute(
+              Routes.home,
+            );
             zeroNetController.loadTopicWidgetData();
-            uiController.changeListSorting(ListSorting.Home);
+            uiController.changeListSorting(
+              ListSorting.home,
+            );
           },
           child: Text(
             pathString[0],
             style: threadItThemeController
                 .currentTheme.value.cardHeadingTextStyle
-                .copyWith(fontSize: 20),
+                .copyWith(
+              fontSize: 20,
+            ),
             textAlign: TextAlign.start,
           ),
         ),
         Text(
           "> ",
           style: threadItThemeController.currentTheme.value.cardHeadingTextStyle
-              .copyWith(color: Colors.white, fontSize: 20),
+              .copyWith(
+            color: Colors.white,
+            fontSize: 20,
+          ),
           textAlign: TextAlign.start,
         ),
         GestureDetector(
           onTap: () {
-            uiController.currentRoute.value = Routes.Home;
+            uiController.currentRoute.value = Routes.home;
           },
           child: Text(
             pathString[1] != " " ? pathString[1] : "",
             style: threadItThemeController
                 .currentTheme.value.cardHeadingTextStyle
-                .copyWith(fontSize: 20),
+                .copyWith(
+              fontSize: 20,
+            ),
             textAlign: TextAlign.start,
           ),
         ),
         Text(
           pathString[1] != " " ? " > " : " ",
           style: threadItThemeController.currentTheme.value.cardHeadingTextStyle
-              .copyWith(color: Colors.white, fontSize: 20),
+              .copyWith(
+            color: Colors.white,
+            fontSize: 20,
+          ),
           textAlign: TextAlign.start,
         ),
         SizedBox(
@@ -255,7 +268,9 @@ class PathButtons extends StatelessWidget {
             topic.title,
             style: threadItThemeController
                 .currentTheme.value.cardHeadingTextStyle
-                .copyWith(color: Colors.white),
+                .copyWith(
+              color: Colors.white,
+            ),
             textAlign: TextAlign.start,
             overflow: TextOverflow.ellipsis,
           ),
@@ -275,29 +290,37 @@ class HeadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      GestureDetector(
-        onTap: () {
-          uiController.currentRoute(Routes.Home);
-          zeroNetController.loadTopicWidgetData();
-          uiController.changeListSorting(ListSorting.Home);
-        },
-        child: Container(
-          height: mediaSize.height * 0.07,
-          width: mediaSize.width * 0.5,
-          color: threadItThemeController.currentTheme.value.primaryColor,
-          child: const Center(
-            child: Text(
-              "ThreadIt",
-              style: TextStyle(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        GestureDetector(
+          onTap: () {
+            uiController.currentRoute(
+              Routes.home,
+            );
+            zeroNetController.loadTopicWidgetData();
+            uiController.changeListSorting(
+              ListSorting.home,
+            );
+          },
+          child: Container(
+            height: mediaSize.height * 0.07,
+            width: mediaSize.width * 0.5,
+            color: threadItThemeController.currentTheme.value.primaryColor,
+            child: const Center(
+              child: Text(
+                "ThreadIt",
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                  color: Colors.white,
+                ),
+              ),
             ),
           ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -325,12 +348,16 @@ class CommentForm extends StatelessWidget {
                 Text(
                   "18sgsdfg2sdgh5fghgfh4gh2gfh2fgh4h2dh@cryptoid.bit",
                   style: TextStyle(
-                      fontSize: 9,
-                      color: theme.backgroundColor.withOpacity(0.7)),
+                    fontSize: 9,
+                    color: theme.backgroundColor.withOpacity(0.7),
+                  ),
                 ),
                 const Text(
                   "- new comment",
-                  style: TextStyle(fontSize: 9, color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: Colors.white,
+                  ),
                 )
               ],
             ),
@@ -352,8 +379,11 @@ class CommentForm extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
                 cursorColor: theme.backgroundColor,
                 decoration: const InputDecoration(
-                    fillColor: Colors.transparent,
-                    border: OutlineInputBorder(borderSide: BorderSide.none)),
+                  fillColor: Colors.transparent,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
             ),
             const SizedBox(
@@ -368,7 +398,9 @@ class CommentForm extends StatelessWidget {
                 child: Text(
                   "Submit Comment",
                   style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w400),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             ),
@@ -398,7 +430,8 @@ class CommentList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Container(
             decoration: BoxDecoration(
-                color: threadItThemeController.currentTheme.value.cardColor),
+              color: threadItThemeController.currentTheme.value.cardColor,
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
@@ -412,15 +445,17 @@ class CommentList extends StatelessWidget {
                       Text(
                         "sfjdskgkldfjgkdf",
                         style: TextStyle(
-                            color: theme.backgroundColor,
-                            fontWeight: FontWeight.w500),
+                          color: theme.backgroundColor,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       Text(
                         " -- on ${((topicData.lastCommentAdded ?? 0) * 1000).numDatetoStringDate}",
                         style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 12),
+                          color: Colors.white,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 12,
+                        ),
                       )
                     ],
                   ),
@@ -428,7 +463,9 @@ class CommentList extends StatelessWidget {
                   Text(
                     topicData.body,
                     style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w500),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(
                     height: 20,

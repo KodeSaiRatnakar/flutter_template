@@ -1,13 +1,15 @@
 String bugsTopicId = "1627556797_12sCaEUFqE6g3JrDqmEA8pn9yrgxwkZQMe";
 String featuresRequest = "1627666223_12sCaEUFqE6g3JrDqmEA8pn9yrgxwkZQMe";
 
-String topicListQuery({String? parent_topic_uri}) {
-  final limit = 31;
+String topicListQuery({
+  String? parentTopicUri,
+  int? limit = 31,
+}) {
   final sql_sticky = '0 AS sticky';
   var where = '';
-  if (parent_topic_uri != null) {
+  if (parentTopicUri != null) {
     where =
-        "WHERE parent_topic_uri = '$parent_topic_uri' OR row_topic_uri = '$parent_topic_uri'";
+        "WHERE parent_topic_uri = '$parentTopicUri' OR row_topic_uri = '$parentTopicUri'";
   } else {
     where = "WHERE topic.type IS NULL AND topic.parent_topic_uri IS NULL";
   }
@@ -30,7 +32,7 @@ String topicListQuery({String? parent_topic_uri}) {
 			$where
 			GROUP BY topic.topic_id, topic.json_id
 			HAVING last_action < $dateFilter""";
-  if (parent_topic_uri == null) {
+  if (parentTopicUri == null) {
     query += """
       UNION ALL
       SELECT
@@ -80,12 +82,12 @@ String topicListQuery({String? parent_topic_uri}) {
       LEFT JOIN json AS topic_sub_creator_json ON (topic_sub_creator_json.json_id = topic_sub.json_id)
       LEFT JOIN json AS topic_sub_creator_content ON (topic_sub_creator_content.directory = topic_sub_creator_json.directory AND topic_sub_creator_content.file_name = 'content.json')
       LEFT JOIN comment ON (comment.topic_uri = row_topic_sub_uri AND comment.added < $dateFilter)
-      WHERE topic.type = "group" AND topic.parent_topic_uri = '$parent_topic_uri'
+      WHERE topic.type = "group" AND topic.parent_topic_uri = '$parentTopicUri'
       GROUP BY topic.topic_id
       HAVING last_action < $dateFilter
     """;
   }
-  if (parent_topic_uri == null) {
+  if (parentTopicUri == null) {
     query += " ORDER BY sticky DESC, last_action DESC LIMIT $limit";
   }
 

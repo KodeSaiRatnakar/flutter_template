@@ -1,9 +1,6 @@
 import 'package:flutter_template/consts.dart';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
-
-import 'package:zeronet_ws/models/models.dart';
-
 import 'package:zeronet_ws/zeronet_ws.dart';
 
 final zeroNetController = Get.put(ZeroNetController());
@@ -12,9 +9,6 @@ List<TopicWidgetData> topicWidgetDataList = [];
 
 class ZeroNetController extends GetxController {
   late ZeroNet instance;
-
-  // var topicWidgetDataList = [].obs;
-
   ZeroNetController() {
     instance = ZeroNet.instance;
   }
@@ -24,26 +18,29 @@ class ZeroNetController extends GetxController {
   }
 
   Future loadTopicWidgetData({String? id}) async {
-    uiController.currentRoute.value = Routes.ShowProgressIndicator;
+    uiController.currentRoute.value = Routes.showProgressIndicator;
     topicWidgetDataList.clear();
 
-    var queryResult =
-        await instance.dbQueryFuture(topicListQuery(parent_topic_uri: id));
+    var queryResult = await instance.dbQueryFuture(
+      topicListQuery(parentTopicUri: id),
+    );
     if (queryResult.isMsg) {
       for (var topic in queryResult.message!.result) {
-        topicWidgetDataList.add(TopicWidgetData.fromJson(topic));
+        topicWidgetDataList.add(
+          TopicWidgetData.fromJson(topic),
+        );
       }
-      uiController.currentRoute.value = Routes.Home;
+      uiController.currentRoute.value = Routes.home;
     }
   }
 }
 
 class UiController extends GetxController {
   final searchStr = "".obs;
-  final currentRoute = Routes.Home.obs;
+  final currentRoute = Routes.home.obs;
   final isSearchBarSelected = false.obs;
   final selectedTopicIndex = 0.obs;
-  final listSorting = ListSorting.Home.obs;
+  final listSorting = ListSorting.home.obs;
 
   void changeRoute(Routes route) {
     currentRoute.value = route;
@@ -55,52 +52,29 @@ class UiController extends GetxController {
 }
 
 enum Routes {
-  Home,
-  TopicList,
-  TopicView,
-  TopicDetailScreen,
-  ShowProgressIndicator,
-  AddTopicData
+  home,
+  topicList,
+  topicView,
+  topicDetailScreen,
+  showProgressIndicator,
+  addTopicData,
 }
 
-enum ListSorting { Home, Features, Bugs }
+enum ListSorting {
+  home,
+  features,
+  bugs,
+}
 
 extension ListSortExt on ListSorting {
   String get pathString {
     switch (this) {
-      case ListSorting.Features:
-        {
-          return "Home,Features";
-        }
-      case ListSorting.Bugs:
-        {
-          return "Home,Bugs";
-        }
-
+      case ListSorting.features:
+        return "Home,Features";
+      case ListSorting.bugs:
+        return "Home,Bugs";
       default:
-        {
-          return "Home, ";
-        }
-    }
-  }
-}
-
-extension RouteExt on Routes {
-  init() {
-    switch (this) {
-      case Routes.Home:
-        {}
-        break;
-      case Routes.TopicList:
-        {}
-        break;
-      case Routes.TopicView:
-        {}
-        break;
-      case Routes.TopicDetailScreen:
-        break;
-      case Routes.ShowProgressIndicator:
-        break;
+        return "Home, ";
     }
   }
 }

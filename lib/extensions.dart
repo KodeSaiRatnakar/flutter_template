@@ -45,7 +45,6 @@ extension intExt on int {
 
   String get modifiedStrForAdmin {
     final present = toDate;
-
     if (DateTime.now().difference(present).inHours >= 24) {
       return "(modified on ${present.month.monthString} ${present.day}, ${present.year})";
     } else if (DateTime.now().difference(present).inMinutes >= 60) {
@@ -56,7 +55,6 @@ extension intExt on int {
 
   String get numDatetoStringDate {
     final present = toDate;
-
     return "${present.month.monthString} ${present.day}, ${present.year}";
   }
 }
