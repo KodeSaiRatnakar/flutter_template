@@ -6,6 +6,15 @@ ThemeController threadItThemeController = Get.put(ThemeController());
 enum ThreadItThemes { DarkTheme, LightTheme }
 
 extension ThemeExt on ThreadItThemes {
+  Color get mainColor {
+    switch (this) {
+      case ThreadItThemes.DarkTheme:
+        return const Color(0xff83EFFF);
+      default:
+        return const Color(0xff2e5a61);
+    }
+  }
+
   Color get primaryColor {
     switch (this) {
       case ThreadItThemes.DarkTheme:

@@ -30,7 +30,6 @@ class ZeroNetController extends GetxController {
     var queryResult =
         await instance.dbQueryFuture(topicListQuery(parent_topic_uri: id));
     if (queryResult.isMsg) {
-      //  print(queryResult.message!.result[0]);
       for (var topic in queryResult.message!.result) {
         topicWidgetDataList.add(TopicWidgetData.fromJson(topic));
       }
@@ -40,6 +39,7 @@ class ZeroNetController extends GetxController {
 }
 
 class UiController extends GetxController {
+  final searchStr = "".obs;
   final currentRoute = Routes.Home.obs;
   final isSearchBarSelected = false.obs;
   final selectedTopicIndex = 0.obs;
@@ -59,7 +59,8 @@ enum Routes {
   TopicList,
   TopicView,
   TopicDetailScreen,
-  ShowProgressIndicator
+  ShowProgressIndicator,
+  AddTopicData
 }
 
 enum ListSorting { Home, Features, Bugs }
@@ -69,15 +70,16 @@ extension ListSortExt on ListSorting {
     switch (this) {
       case ListSorting.Features:
         {
-          return "Home / Features /";
+          return "Home,Features";
         }
       case ListSorting.Bugs:
         {
-          return "Home / Bugs /";
+          return "Home,Bugs";
         }
+
       default:
         {
-          return "Home /";
+          return "Home, ";
         }
     }
   }

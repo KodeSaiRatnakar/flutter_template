@@ -58,6 +58,9 @@ class HomePage extends StatelessWidget {
                         onPressed: () {
                           if (uiController.isSearchBarSelected.value) {
                             searchController.clear();
+                          } else {
+                            searchController.text =
+                                uiController.searchStr.value;
                           }
                           uiController.isSearchBarSelected.value =
                               !(uiController.isSearchBarSelected.value);
@@ -77,7 +80,9 @@ class HomePage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Obx(() => AnimatedContainer(
+              child: Obx(
+                () {
+                  return AnimatedContainer(
                     curve: Curves.linear,
                     height: uiController.isSearchBarSelected.value
                         ? searchBarMaxHeight
@@ -85,55 +90,96 @@ class HomePage extends StatelessWidget {
                     duration: const Duration(milliseconds: 200),
                     child: TextField(
                       controller: searchController,
-                      style: TextStyle(color: Colors.white, fontSize: 15),
+                      onChanged: (text) {
+                        uiController.searchStr.value = text;
+                      },
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: uiController.isSearchBarSelected.value
-                                      ? themeColor
-                                      : Colors.transparent,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(7)),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: uiController.isSearchBarSelected.value
-                                      ? themeColor
-                                      : Colors.transparent,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(7)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: uiController.isSearchBarSelected.value
-                                      ? themeColor
-                                      : Colors.transparent,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(7)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: uiController.isSearchBarSelected.value
-                                      ? themeColor
-                                      : Colors.transparent,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(7))),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: uiController.isSearchBarSelected.value
+                                    ? themeColor
+                                    : Colors.transparent,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(7)),
+                        errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: uiController.isSearchBarSelected.value
+                                    ? themeColor
+                                    : Colors.transparent,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(7)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: uiController.isSearchBarSelected.value
+                                  ? themeColor
+                                  : Colors.transparent,
+                              width: 2),
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: uiController.isSearchBarSelected.value
+                                  ? themeColor
+                                  : Colors.transparent,
+                              width: 2),
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                      ),
                     ),
-                  )),
+                  );
+                },
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PinnedFeatures(
-                  mediaSize: mediaSize,
-                  title: "Features",
-                  isSelected:
-                      uiController.listSorting.value == ListSorting.Features,
-                ),
-                PinnedFeatures(
-                  mediaSize: mediaSize,
-                  title: "Bugs",
-                  isSelected:
-                      uiController.listSorting.value == ListSorting.Bugs,
-                )
-              ],
+            Obx(
+              () {
+                switch (uiController.listSorting.value) {
+                  case ListSorting.Home:
+                    {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PinnedFeatures(
+                            mediaSize: mediaSize,
+                            title: "Features",
+                            isSelected: uiController.listSorting.value ==
+                                ListSorting.Features,
+                          ),
+                          PinnedFeatures(
+                            mediaSize: mediaSize,
+                            title: "Bugs",
+                            isSelected: uiController.listSorting.value ==
+                                ListSorting.Bugs,
+                          )
+                        ],
+                      );
+                    }
+                  default:
+                    {
+                      List<String> pathString =
+                          uiController.listSorting.value.pathString.split(",");
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            pathString[0],
+                            style: threadItThemeController
+                                .currentTheme.value.cardHeadingTextStyle
+                                .copyWith(fontSize: 25),
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            " > ${pathString[1]}",
+                            style: threadItThemeController
+                                .currentTheme.value.cardHeadingTextStyle
+                                .copyWith(color: Colors.white, fontSize: 25),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      );
+                    }
+                }
+              },
             ),
             const SizedBox(
               height: 10,
@@ -220,7 +266,7 @@ class PinnedFeatures extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
+                const Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "2023",
@@ -231,7 +277,7 @@ class PinnedFeatures extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.only(right: 0.0),
                     child: ElevatedButton(
-                      style: ButtonStyle(
+                      style: const ButtonStyle(
                         backgroundColor:
                             MaterialStatePropertyAll(Color(0xff83EFFF)),
                       ),
@@ -334,7 +380,6 @@ class Topic extends StatelessWidget {
                 onPressed: () {
                   uiController.selectedTopicIndex.value = index;
                   uiController.changeRoute(Routes.TopicDetailScreen);
-                  //  context.go("/detailedPost", extra: widget.topicData);
                 },
                 child: Text(
                   topicData.title,
@@ -468,6 +513,8 @@ class Topic extends StatelessWidget {
 Widget addPost({required ThemeData theme}) {
   return FloatingActionButton(
       backgroundColor: threadItThemeController.currentTheme.value.primaryColor,
-      onPressed: () {},
+      onPressed: () {
+        uiController.currentRoute.value = Routes.AddTopicData;
+      },
       child: const Icon(Icons.add));
 }

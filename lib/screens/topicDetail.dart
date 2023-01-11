@@ -7,6 +7,9 @@ import '../extensions.dart';
 class TopicDetailScreen extends StatelessWidget {
   TopicWidgetData topic;
 
+  List<String> pathString =
+      uiController.listSorting.value.pathString.split(",");
+
   TopicDetailScreen({required this.topic, Key? key}) : super(key: key);
 
   bool onLikeButtonHover = false;
@@ -28,182 +31,20 @@ class TopicDetailScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          uiController.currentRoute(Routes.Home);
-                          zeroNetController.loadTopicWidgetData();
-                          uiController.changeListSorting(ListSorting.Home);
-                        },
-                        child: Container(
-                          height: mediaSize.height * 0.07,
-                          width: mediaSize.width * 0.5,
-                          color: threadItThemeController
-                              .currentTheme.value.primaryColor,
-                          child: const Center(
-                            child: Text(
-                              "ThreadIt",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),
+                HeadButton(mediaSize: mediaSize),
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    TextButton(
-                      style: theme.textButtonTheme.style?.copyWith(
-                          backgroundColor:
-                              const MaterialStatePropertyAll<Color>(
-                                  Color(0xff2e2b32))),
-                      onPressed: () {
-                        uiController.currentRoute.value = Routes.Home;
-                      },
-                      child: Text(
-                        uiController.listSorting.value.pathString,
-                        style: threadItThemeController
-                            .currentTheme.value.cardHeadingTextStyle,
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      width: mediaSize.width * 0.45,
-                      child: Text(
-                        topic.title,
-                        style: theme.textTheme.bodyLarge
-                            ?.copyWith(color: Colors.white),
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
+                PathButtons(
+                    pathString: pathString, mediaSize: mediaSize, topic: topic),
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
-                  // height: mediaSize.height * 0.45,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: threadItThemeController.currentTheme.value.cardColor,
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          topic.title,
-                          textAlign: TextAlign.start,
-                          style: threadItThemeController
-                              .currentTheme.value.cardHeadingTextStyle,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          topic.body,
-                          style: threadItThemeController
-                              .currentTheme.value.cardBodyTextStyle,
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(5),
-                              onTap: () {
-                                //   widget.topic.isLiked =
-                                //       widget.topic.isLiked ? false : true;
-                                //   if (widget.topic.isLiked) {
-                                //     widget.topic.totalLikes++;
-                                //     tempLike = 0;
-                                //   } else {
-                                //     widget.topic.totalLikes--;
-                                //   }
-                                //   setState(() {g});
-                                // },
-                                // hoverColor: Colors.green,
-                                // onHover: (value) {
-                                //   if (!widget.topic.isLiked) {
-                                //     if (value) {
-                                //       onLikeButtonHover = true;
-                                //       tempLike = 1;
-                                //     } else {
-                                //       tempLike = 0;
-                                //       onLikeButtonHover = false;
-                                //     }
-                                //     setState(() {});
-                                //   }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: onLikeButtonHover
-                                            ? Colors.green
-                                            : threadItThemeController
-                                                .currentTheme
-                                                .value
-                                                .primaryColor,
-                                        width: 1),
-                                    color: false
-                                        ? Colors.green
-                                        : Colors.transparent),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 3, horizontal: 16),
-                                  child: Center(
-                                    child: Text(
-                                      (topic.votes + tempLike).toString(),
-                                      style: threadItThemeController
-                                          .currentTheme
-                                          .value
-                                          .likeButtonDisabledTextStyle,
-                                      //         ?.copyWith(fontSize: 14),,
-                                      // style: onLikeButtonHover ||
-                                      //         widget.topic.isLiked
-                                      //     ? theme.textTheme.bodyMedium?.copyWith(
-                                      //         fontSize: 14, color: Colors.white)
-                                      //     : theme.textTheme.bodyMedium
-                                      //         ?.copyWith(fontSize: 14),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: mediaSize.width * 0.05,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(topic.topicCreatorUserName.split("@")[0],
-                                    style: threadItThemeController.currentTheme
-                                        .value.commentUserTextStyle),
-                                Text(
-                                    "posted on ${((topic.added) * 1000).numDatetoStringDate} ${topic.lastAdded != topic.added ? true ? ((topic.lastAdded) * 1000).modifiedStrForAdmin : '' : ''}",
-                                    style: threadItThemeController.currentTheme
-                                        .value.commentOrLikeTimeStyle),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                TopicBody(
+                    topic: topic,
+                    onLikeButtonHover: onLikeButtonHover,
+                    tempLike: tempLike,
+                    mediaSize: mediaSize),
                 const SizedBox(
                   height: 10,
                 ),
@@ -216,7 +57,7 @@ class TopicDetailScreen extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            CommentsList(
+            CommentList(
               theme: theme,
               topicData: topic,
             )
@@ -224,6 +65,239 @@ class TopicDetailScreen extends StatelessWidget {
         ),
       )),
     );
+  }
+}
+
+class TopicBody extends StatelessWidget {
+  const TopicBody({
+    Key? key,
+    required this.topic,
+    required this.onLikeButtonHover,
+    required this.tempLike,
+    required this.mediaSize,
+  }) : super(key: key);
+
+  final TopicWidgetData topic;
+  final bool onLikeButtonHover;
+  final int tempLike;
+  final Size mediaSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // height: mediaSize.height * 0.45,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: threadItThemeController.currentTheme.value.cardColor,
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              topic.title,
+              textAlign: TextAlign.start,
+              style: threadItThemeController
+                  .currentTheme.value.cardHeadingTextStyle,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              topic.body,
+              style:
+                  threadItThemeController.currentTheme.value.cardBodyTextStyle,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () {
+                    //   widget.topic.isLiked =
+                    //       widget.topic.isLiked ? false : true;
+                    //   if (widget.topic.isLiked) {
+                    //     widget.topic.totalLikes++;
+                    //     tempLike = 0;
+                    //   } else {
+                    //     widget.topic.totalLikes--;
+                    //   }
+                    //   setState(() {g});
+                    // },
+                    // hoverColor: Colors.green,
+                    // onHover: (value) {
+                    //   if (!widget.topic.isLiked) {
+                    //     if (value) {
+                    //       onLikeButtonHover = true;
+                    //       tempLike = 1;
+                    //     } else {
+                    //       tempLike = 0;
+                    //       onLikeButtonHover = false;
+                    //     }
+                    //     setState(() {});
+                    //   }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: onLikeButtonHover
+                                ? Colors.green
+                                : threadItThemeController
+                                    .currentTheme.value.primaryColor,
+                            width: 1),
+                        color: false ? Colors.green : Colors.transparent),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 16),
+                      child: Center(
+                        child: Text(
+                          (topic.votes + tempLike).toString(),
+                          style: threadItThemeController
+                              .currentTheme.value.likeButtonDisabledTextStyle,
+                          //         ?.copyWith(fontSize: 14),,
+                          // style: onLikeButtonHover ||
+                          //         widget.topic.isLiked
+                          //     ? theme.textTheme.bodyMedium?.copyWith(
+                          //         fontSize: 14, color: Colors.white)
+                          //     : theme.textTheme.bodyMedium
+                          //         ?.copyWith(fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: mediaSize.width * 0.05,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(topic.topicCreatorUserName.split("@")[0],
+                        style: threadItThemeController
+                            .currentTheme.value.commentUserTextStyle),
+                    Text(
+                        "posted on ${((topic.added) * 1000).numDatetoStringDate} ${topic.lastAdded != topic.added ? true ? ((topic.lastAdded) * 1000).modifiedStrForAdmin : '' : ''}",
+                        style: threadItThemeController
+                            .currentTheme.value.commentOrLikeTimeStyle),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PathButtons extends StatelessWidget {
+  const PathButtons({
+    Key? key,
+    required this.pathString,
+    required this.mediaSize,
+    required this.topic,
+  }) : super(key: key);
+
+  final List<String> pathString;
+  final Size mediaSize;
+  final TopicWidgetData topic;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        TextButton(
+          onPressed: () {
+            uiController.currentRoute(Routes.Home);
+            zeroNetController.loadTopicWidgetData();
+            uiController.changeListSorting(ListSorting.Home);
+          },
+          child: Text(
+            pathString[0],
+            style: threadItThemeController
+                .currentTheme.value.cardHeadingTextStyle
+                .copyWith(fontSize: 20),
+            textAlign: TextAlign.start,
+          ),
+        ),
+        Text(
+          "> ",
+          style: threadItThemeController.currentTheme.value.cardHeadingTextStyle
+              .copyWith(color: Colors.white, fontSize: 20),
+          textAlign: TextAlign.start,
+        ),
+        GestureDetector(
+          onTap: () {
+            uiController.currentRoute.value = Routes.Home;
+          },
+          child: Text(
+            pathString[1] != " " ? pathString[1] : "",
+            style: threadItThemeController
+                .currentTheme.value.cardHeadingTextStyle
+                .copyWith(fontSize: 20),
+            textAlign: TextAlign.start,
+          ),
+        ),
+        Text(
+          pathString[1] != " " ? " > " : " ",
+          style: threadItThemeController.currentTheme.value.cardHeadingTextStyle
+              .copyWith(color: Colors.white, fontSize: 20),
+          textAlign: TextAlign.start,
+        ),
+        SizedBox(
+          width: mediaSize.width * 0.45,
+          child: Text(
+            topic.title,
+            style: threadItThemeController
+                .currentTheme.value.cardHeadingTextStyle
+                .copyWith(color: Colors.white),
+            textAlign: TextAlign.start,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class HeadButton extends StatelessWidget {
+  const HeadButton({
+    Key? key,
+    required this.mediaSize,
+  }) : super(key: key);
+
+  final Size mediaSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      GestureDetector(
+        onTap: () {
+          uiController.currentRoute(Routes.Home);
+          zeroNetController.loadTopicWidgetData();
+          uiController.changeListSorting(ListSorting.Home);
+        },
+        child: Container(
+          height: mediaSize.height * 0.07,
+          width: mediaSize.width * 0.5,
+          color: threadItThemeController.currentTheme.value.primaryColor,
+          child: const Center(
+            child: Text(
+              "ThreadIt",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    ]);
   }
 }
 
@@ -275,9 +349,9 @@ class CommentForm extends StatelessWidget {
                 keyboardType: TextInputType.multiline,
                 minLines: 1,
                 maxLines: 15,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 cursorColor: theme.backgroundColor,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     fillColor: Colors.transparent,
                     border: OutlineInputBorder(borderSide: BorderSide.none)),
               ),
@@ -308,16 +382,11 @@ class CommentForm extends StatelessWidget {
   }
 }
 
-class CommentsList extends StatefulWidget {
+class CommentList extends StatelessWidget {
   final ThemeData theme;
   TopicWidgetData topicData;
-  CommentsList({required this.theme, required this.topicData, super.key});
+  CommentList({required this.theme, required this.topicData, super.key});
 
-  @override
-  State<CommentsList> createState() => _CommentsListState();
-}
-
-class _CommentsListState extends State<CommentsList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -343,11 +412,11 @@ class _CommentsListState extends State<CommentsList> {
                       Text(
                         "sfjdskgkldfjgkdf",
                         style: TextStyle(
-                            color: widget.theme.backgroundColor,
+                            color: theme.backgroundColor,
                             fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        " -- on ${((widget.topicData.lastCommentAdded ?? 0) * 1000).numDatetoStringDate}",
+                        " -- on ${((topicData.lastCommentAdded ?? 0) * 1000).numDatetoStringDate}",
                         style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w300,
@@ -357,7 +426,7 @@ class _CommentsListState extends State<CommentsList> {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    widget.topicData.body,
+                    topicData.body,
                     style: const TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w500),
                   ),

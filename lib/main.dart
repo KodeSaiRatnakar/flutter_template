@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/commons.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
+import 'package:flutter_template/screens/add_topic.dart';
 import 'package:get/get.dart';
 
 import 'screens/homeScreen.dart';
@@ -55,6 +56,10 @@ class MyHomePage extends StatelessWidget {
           return TopicDetailScreen(
               topic:
                   topicWidgetDataList[uiController.selectedTopicIndex.value]);
+        case Routes.AddTopicData:
+          {
+            return AddTopicData();
+          }
         default:
           return Container();
       }
