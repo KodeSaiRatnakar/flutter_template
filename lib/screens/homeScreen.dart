@@ -9,16 +9,15 @@ import '../extensions.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   Color themeColor = const Color(0xff83EFFF);
-  double searchBarMaxHeight = 50;
 
   @override
   Widget build(BuildContext context) {
     Size mediaSize = MediaQuery.of(context).size;
     ThemeData theme = Theme.of(context);
-    TextEditingController searchController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: const Color(0xff2e2b32),
+      backgroundColor:
+          threadItThemeController.currentTheme.value.backGroundColor,
       floatingActionButton: addPost(theme: theme),
       body: SafeArea(
         child: Padding(
@@ -28,186 +27,190 @@ class HomePage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      zeroNetController.loadTopicWidgetData();
-                      uiController.changeListSorting(
-                        ListSorting.home,
-                      );
-                    },
-                    child: Container(
-                      height: mediaSize.height * 0.07,
-                      width: mediaSize.width * 0.5,
-                      color: threadItThemeController
-                          .currentTheme.value.primaryColor,
-                      child: const Center(
-                        child: Text(
-                          "ThreadIt",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          if (uiController.isSearchBarSelected.value) {
-                            searchController.clear();
-                          } else {
-                            searchController.text =
-                                uiController.searchStr.value;
-                          }
-                          uiController.isSearchBarSelected.value =
-                              !(uiController.isSearchBarSelected.value);
-                        },
-                        icon: Icon(
-                          Icons.search,
-                          size: 30,
-                          color: themeColor,
-                        ),
-                      ),
-                      headerIcon(
-                        function: () {},
-                        iconData: Icons.language_outlined,
-                        color: themeColor,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Obx(
-                  () {
-                    return AnimatedContainer(
-                      curve: Curves.linear,
-                      height: uiController.isSearchBarSelected.value
-                          ? searchBarMaxHeight
-                          : 0,
-                      duration: const Duration(milliseconds: 200),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (text) {
-                          uiController.searchStr.value = text;
-                        },
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 15),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: uiController.isSearchBarSelected.value
-                                  ? themeColor
-                                  : Colors.transparent,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: uiController.isSearchBarSelected.value
-                                    ? themeColor
-                                    : Colors.transparent,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: uiController.isSearchBarSelected.value
-                                  ? themeColor
-                                  : Colors.transparent,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: uiController.isSearchBarSelected.value
-                                  ? themeColor
-                                  : Colors.transparent,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Obx(
-                () {
-                  switch (uiController.listSorting.value) {
-                    case ListSorting.home:
-                      {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            PinnedFeatures(
-                              mediaSize: mediaSize,
-                              title: "Features",
-                              isSelected: uiController.listSorting.value ==
-                                  ListSorting.features,
-                            ),
-                            PinnedFeatures(
-                              mediaSize: mediaSize,
-                              title: "Bugs",
-                              isSelected: uiController.listSorting.value ==
-                                  ListSorting.bugs,
-                            )
-                          ],
-                        );
-                      }
-                    default:
-                      {
-                        List<String> pathString = uiController
-                            .listSorting.value.pathString
-                            .split(",");
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              pathString[0],
-                              style: threadItThemeController
-                                  .currentTheme.value.cardHeadingTextStyle
-                                  .copyWith(fontSize: 25),
-                              textAlign: TextAlign.start,
-                            ),
-                            Text(
-                              " > ${pathString[1]}",
-                              style: threadItThemeController
-                                  .currentTheme.value.cardHeadingTextStyle
-                                  .copyWith(
-                                color: Colors.white,
-                                fontSize: 25,
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        );
-                      }
-                  }
-                },
-              ),
+              CustomAppBar(mediaSize: mediaSize, themeColor: themeColor),
+              SearchBarTextField(),
               const SizedBox(
                 height: 10,
               ),
-              TopicList(
-                mediaSize: mediaSize,
-                theme: theme,
-                topicWidgetData: topicWidgetDataList,
-              )
+              TopicsListView(mediaSize: mediaSize, theme: theme)
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class TopicsListView extends StatelessWidget {
+  const TopicsListView({
+    super.key,
+    required this.mediaSize,
+    required this.theme,
+  });
+
+  final Size mediaSize;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor:
+                threadItThemeController.currentTheme.value.backGroundColor,
+            floating: true,
+            bottom: PreferredSize(
+              preferredSize: Size(mediaSize.width,
+                  uiController.listSorting.value == ListSorting.home ? 62 : 10),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Obx(
+                  () {
+                    switch (uiController.listSorting.value) {
+                      case ListSorting.home:
+                        {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              PinnedFeatures(
+                                mediaSize: mediaSize,
+                                title: "Features",
+                                isSelected: uiController.listSorting.value ==
+                                    ListSorting.features,
+                              ),
+                              PinnedFeatures(
+                                mediaSize: mediaSize,
+                                title: "Bugs",
+                                isSelected: uiController.listSorting.value ==
+                                    ListSorting.bugs,
+                              )
+                            ],
+                          );
+                        }
+                      default:
+                        {
+                          List<String> pathString = uiController
+                              .listSorting.value.pathString
+                              .split(",");
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                pathString[0],
+                                style: threadItThemeController
+                                    .currentTheme.value.cardHeadingTextStyle
+                                    .copyWith(fontSize: 25),
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                " > ${pathString[1]}",
+                                style: threadItThemeController
+                                    .currentTheme.value.cardHeadingTextStyle
+                                    .copyWith(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          );
+                        }
+                    }
+                  },
+                ),
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: topicWidgetDataList.length,
+                  itemBuilder: (context, index) {
+                    return Topic(
+                      mediaSize: mediaSize,
+                      theme: theme,
+                      topicData: topicWidgetDataList[index],
+                      index: index,
+                    );
+                  },
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({
+    super.key,
+    required this.mediaSize,
+    required this.themeColor,
+  });
+
+  final Size mediaSize;
+
+  final Color themeColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        GestureDetector(
+          onTap: () {
+            zeroNetController.loadTopicWidgetData();
+            uiController.changeListSorting(
+              ListSorting.home,
+            );
+          },
+          child: Container(
+            height: mediaSize.height * 0.07,
+            width: mediaSize.width * 0.5,
+            color: threadItThemeController.currentTheme.value.primaryColor,
+            child: const Center(
+              child: Text(
+                "ThreadIt",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                uiController.isSearchBarSelected.value =
+                    !(uiController.isSearchBarSelected.value);
+              },
+              icon: Icon(
+                Icons.search,
+                size: 30,
+                color: themeColor,
+              ),
+            ),
+            headerIcon(
+                function: () {},
+                iconData: Icons.filter_alt_outlined,
+                color: themeColor),
+            headerIcon(
+              function: () {},
+              iconData: Icons.language_outlined,
+              color: themeColor,
+            )
+          ],
+        ),
+      ],
     );
   }
 }
@@ -219,7 +222,6 @@ Widget headerIcon(
   return IconButton(
     onPressed: () {
       function();
-      print("pressed sear");
     },
     icon: Icon(
       iconData,
@@ -272,11 +274,12 @@ class PinnedFeatures extends StatelessWidget {
                   Transform.rotate(
                     angle: 0.9,
                     child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.push_pin_outlined,
-                          size: 20,
-                        )),
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.push_pin_outlined,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -284,7 +287,7 @@ class PinnedFeatures extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
                       "2023",
                       style: TextStyle(
@@ -339,34 +342,6 @@ class PinnedFeatures extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class TopicList extends StatelessWidget {
-  final Size mediaSize;
-  final ThemeData theme;
-  final List topicWidgetData;
-  TopicList(
-      {required this.mediaSize,
-      required this.topicWidgetData,
-      required this.theme,
-      super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: topicWidgetData.length,
-        itemBuilder: (context, index) {
-          return Topic(
-            mediaSize: mediaSize,
-            theme: theme,
-            topicData: topicWidgetData[index],
-            index: index,
-          );
-        },
       ),
     );
   }
@@ -480,12 +455,6 @@ class Topic extends StatelessWidget {
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
-
-                              //  onLikeButtonHover || widget.topic.isLiked
-                              //     ? widget.theme.textTheme.bodyMedium?.copyWith(
-                              //         fontSize: 14, color: Colors.white)
-                              //     : widget.theme.textTheme.bodyMedium
-                              //         ?.copyWith(fontSize: 14),
                             ),
                           ),
                         ),
@@ -559,4 +528,71 @@ Widget addPost({required ThemeData theme}) {
       Icons.add,
     ),
   );
+}
+
+class SearchBarTextField extends StatelessWidget {
+  SearchBarTextField({super.key});
+  Color themeColor = threadItThemeController.currentTheme.value.mainColor;
+  double searchBarMaxHeight = 50;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Obx(
+        () {
+          return AnimatedContainer(
+            curve: Curves.linear,
+            height:
+                uiController.isSearchBarSelected.value ? searchBarMaxHeight : 0,
+            duration: const Duration(milliseconds: 200),
+            child: TextField(
+              controller: uiController.searchController.value,
+              onChanged: (text) {
+                uiController.searchStr.value = text;
+              },
+              style: const TextStyle(color: Colors.white, fontSize: 15),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: uiController.isSearchBarSelected.value
+                        ? themeColor
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: uiController.isSearchBarSelected.value
+                          ? themeColor
+                          : Colors.transparent,
+                      width: 2),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: uiController.isSearchBarSelected.value
+                        ? themeColor
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: uiController.isSearchBarSelected.value
+                        ? themeColor
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

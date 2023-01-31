@@ -3,6 +3,7 @@ import 'package:flutter_template/controllers/themeControlle.dart';
 import '../controllers/zeronet.dart';
 import '../main.dart';
 import '../extensions.dart';
+import '../widgets/buttons.dart';
 
 class TopicDetailScreen extends StatelessWidget {
   TopicWidgetData topic;
@@ -389,21 +390,7 @@ class CommentForm extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.amber,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "Submit Comment",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
+            SubmitButton(text: "Submit Comment", fontSize: 10),
             const SizedBox(
               height: 10,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
+import '../widgets/buttons.dart';
 import 'package:get/get.dart';
 
 class AddTopicData extends StatelessWidget {
@@ -93,22 +94,42 @@ class AddTopicData extends StatelessWidget {
                 )
               ],
             ),
-            TextField(
-              style: theme.cardHeadingTextStyle,
-              keyboardType: TextInputType.multiline,
-              minLines: 1,
-              maxLines: 3,
-              cursorColor: theme.mainColor,
-              decoration: InputDecoration(
-                hintText: "Add Topic Title",
-                hintStyle: theme.cardHeadingTextStyle,
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide.none,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  border: Border.all(
+                    color: theme.topicAddBorderColor,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: TextField(
+                  style: theme.cardHeadingTextStyle,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1,
+                  maxLines: 3,
+                  cursorColor: theme.mainColor,
+                  decoration: InputDecoration(
+                    hintText: "Add Topic Title",
+                    hintStyle: theme.cardHeadingTextStyle,
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
                 ),
               ),
             ),
             Container(
-              decoration: BoxDecoration(color: theme.cardColor),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                border: Border.all(
+                  color: theme.topicAddBorderColor,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
               child: TextField(
                 style: theme.cardBodyTextStyle,
                 keyboardType: TextInputType.multiline,
@@ -127,21 +148,10 @@ class AddTopicData extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.amber,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "Submit Comment",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+            SubmitButton(
+              text: "Add new topic",
+              fontSize: 12,
+            )
           ],
         ),
       ),

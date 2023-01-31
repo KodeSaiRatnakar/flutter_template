@@ -42,6 +42,15 @@ extension ThemeExt on ThreadItThemes {
     }
   }
 
+  Color get topicAddBorderColor {
+    switch (this) {
+      case ThreadItThemes.darkTheme:
+        return const Color(0xff4c5864);
+      default:
+        return const Color(0xff2e5a61);
+    }
+  }
+
   TextStyle get cardHeadingTextStyle {
     switch (this) {
       case ThreadItThemes.darkTheme:

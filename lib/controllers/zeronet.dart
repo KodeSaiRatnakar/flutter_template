@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_template/consts.dart';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
@@ -42,6 +43,7 @@ class UiController extends GetxController {
   final selectedTopicIndex = 0.obs;
   final listSorting = ListSorting.home.obs;
   final dropdownvalue = "General".obs;
+  var searchController = Rx(TextEditingController());
 
   void changeRoute(Routes route) {
     currentRoute.value = route;
