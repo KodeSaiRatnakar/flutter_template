@@ -1,3 +1,5 @@
+import 'dart:math';
+
 extension intExt on int {
   DateTime get toDate {
     return DateTime.fromMillisecondsSinceEpoch(this);
@@ -56,5 +58,16 @@ extension intExt on int {
   String get numDatetoStringDate {
     final present = toDate;
     return "${present.month.monthString} ${present.day}, ${present.year}";
+  }
+}
+
+extension StringExt on String {
+  String get checkRecomment {
+    String editedStr = "";
+
+    if (this.startsWith(">[")) {
+      // editedStr = this.split(":")[1]
+    }
+    return editedStr;
   }
 }

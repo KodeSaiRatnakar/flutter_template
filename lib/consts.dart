@@ -3,9 +3,9 @@ String featuresRequest = "1627666223_12sCaEUFqE6g3JrDqmEA8pn9yrgxwkZQMe";
 
 String topicListQuery({
   String? parentTopicUri,
-  int? limit = 31,
+  int? limit = 30,
 }) {
-  final sql_sticky = '0 AS sticky';
+  const sql_sticky = '0 AS sticky';
   var where = '';
   if (parentTopicUri != null) {
     where =
@@ -92,4 +92,18 @@ String topicListQuery({
   }
 
   return query;
+}
+
+String commentsQueryString(String topicId) {
+  return '''SELECT
+	comment.*,
+			 user.value AS user_name,
+			 user_json_content.directory AS user_address,
+			 (SELECT COUNT(*) FROM comment_vote WHERE comment_vote.comment_uri = comment.comment_id || '_' || user_json_content.directory)+1 AS votes
+			FROM comment
+			 LEFT JOIN json AS user_json_data ON (user_json_data.json_id = comment.json_id)
+			 LEFT JOIN json AS user_json_content ON (user_json_content.directory = user_json_data.directory AND user_json_content.file_name = 'content.json')
+			 LEFT JOIN keyvalue AS user ON (user.json_id = user_json_content.json_id AND user.key = 'cert_user_id')
+			WHERE comment.topic_uri = "$topicId" AND added < ${DateTime.now().millisecondsSinceEpoch / 1000}
+			ORDER BY added DESC''';
 }

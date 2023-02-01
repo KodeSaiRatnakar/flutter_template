@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
-import '../widgets/buttons.dart';
+import 'package:flutter_template/models/user_data.dart';
+import '../controllers/ui_controller.dart';
 import 'package:get/get.dart';
 
 class AddTopicData extends StatelessWidget {
   AddTopicData({super.key});
 
   var items = ["General", "Features", "Bugs"];
+  TextEditingController topicTitleCtrl = TextEditingController();
+  TextEditingController topicBodyCtrl = TextEditingController();
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -94,64 +99,119 @@ class AddTopicData extends StatelessWidget {
                 )
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  border: Border.all(
-                    color: theme.topicAddBorderColor,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: TextField(
-                  style: theme.cardHeadingTextStyle,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,
-                  maxLines: 3,
-                  cursorColor: theme.mainColor,
-                  decoration: InputDecoration(
-                    hintText: "Add Topic Title",
-                    hintStyle: theme.cardHeadingTextStyle,
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide.none,
+            Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        border: Border.all(
+                          color: theme.topicAddBorderColor,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextFormField(
+                        controller: topicTitleCtrl,
+                        style: theme.cardHeadingTextStyle,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 3,
+                        cursorColor: theme.mainColor,
+                        validator: (value) {
+                          if (value != null) {
+                            if (value.isNotEmpty) {
+                              return null;
+                            }
+                          }
+                          return "Enter Topic Title";
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Add Topic Title",
+                          hintStyle: theme.cardHeadingTextStyle,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                border: Border.all(
-                  color: theme.topicAddBorderColor,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: TextField(
-                style: theme.cardBodyTextStyle,
-                keyboardType: TextInputType.multiline,
-                minLines: 3,
-                maxLines: 15,
-                cursorColor: theme.mainColor,
-                decoration: InputDecoration(
-                  hintText: "Add message",
-                  hintStyle: theme.cardBodyTextStyle,
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.cardColor,
+                      border: Border.all(
+                        color: theme.topicAddBorderColor,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      style: theme.cardBodyTextStyle,
+                      keyboardType: TextInputType.multiline,
+                      controller: topicBodyCtrl,
+                      minLines: 3,
+                      maxLines: 15,
+                      cursorColor: theme.mainColor,
+                      validator: (value) {
+                        if (value != null) {
+                          if (value.isNotEmpty) {
+                            return null;
+                          }
+                        }
+                        return "Enter Topic Message";
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Add message",
+                        hintStyle: theme.cardBodyTextStyle,
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             const SizedBox(
               height: 10,
             ),
-            SubmitButton(
-              text: "Add new topic",
-              fontSize: 12,
-            )
+            ElevatedButton(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  zeroNetController.userDataObj.userTopics.add(
+                    Topic(
+                      topicId:
+                          (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
+                      title: topicTitleCtrl.text,
+                      body: topicBodyCtrl.text,
+                      added:
+                          (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
+                    ),
+                  );
+
+                  topicBodyCtrl.clear();
+                  topicTitleCtrl.clear();
+                  zeroNetController.saveUserData();
+                }
+              },
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll<Color>(Colors.amber)),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Add new topic",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

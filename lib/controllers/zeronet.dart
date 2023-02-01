@@ -1,21 +1,126 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/consts.dart';
-import 'package:flutter_template/main.dart';
+import 'package:zeronet_ws/models/models.dart';
+import '../consts.dart';
+import '../models/user_data.dart';
 import 'package:get/get.dart';
+import '../models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
+import '../main.dart';
+import 'ui_controller.dart';
 
 final zeroNetController = Get.put(ZeroNetController());
-final uiController = Get.put(UiController());
+
 List<TopicWidgetData> topicWidgetDataList = [];
 
 class ZeroNetController extends GetxController {
   late ZeroNet instance;
+  late SiteInfo siteInfo;
+  late String userDataPath;
+  late UserData userDataObj;
   ZeroNetController() {
     instance = ZeroNet.instance;
   }
 
   Future<void> connect() async {
-    await instance.connect(siteAddr);
+    await instance.connect(siteAddr, onEventMessage: onMessage);
+    await instance.channelJoinFuture(['siteChanged']);
+  }
+
+  void onMessage(message) {
+    var msg = jsonDecode(message);
+
+    var msg2 = msg['params'];
+    if (msg2 is Map) {
+      if (msg2['event'] is List) {
+        final event = msg2['event'];
+
+        final name = event[0];
+        final param = event[1];
+
+        if (name == 'file_done') {
+          var path = param.toString();
+
+          var pattern = 'data/users/';
+
+          if (path.startsWith(pattern + '1') && path.endsWith('.json')) {
+            debugPrint('User Data Changed');
+            final userFile = path.replaceFirst(pattern, '');
+            final dataOrContentJsonFile =
+                userFile.replaceFirst(RegExp(r'1\w+'), '');
+
+            if (dataOrContentJsonFile == "/data.json") {
+              loadTopicWidgetData();
+            }
+          }
+        } else {
+          debugPrint('Event Message : $name :: $param');
+        }
+      } else if (msg['cmd'] == 'peerReceive') {
+        // userDataController.addUserStatusListener(msg2);
+      }
+    } else {
+      // debugPrint('Unknown Message');
+      // print(msg);
+    }
+  }
+
+  Future callSiteInfo() async {
+    var siteInformation = await instance.siteInfoFuture();
+    siteInfo = siteInformation;
+    if (siteInfo.certUserId != null) {
+      userDataPath = "data/users/${siteInfo.authAddress}";
+    }
+    await loadUserDirectory();
+  }
+
+  Future loadUserDirectory() async {
+    var totalUsersFiles = await instance.fileListFuture("data/users");
+
+    const String dataJson = '''{
+	"next_topic_id": 1,
+	"topic": [],
+	"topic_vote": {},
+	"next_comment_id": 1,
+	"comment": {},
+	"comment_vote": {}
+  }''';
+
+    final newUserContentJson = '''
+{
+ "address": "15UYrA7aXr2Nto1Gg4yWXpY3EAJwafMTNk",
+"files": {},
+ "inner_path": "data/users/${siteInfo.authAddress}/content.json",
+ "modified": ${(DateTime.now().millisecondsSinceEpoch / 1000).ceil()},
+ "signs": {"${siteInfo.authAddress}":""}}
+''';
+
+    final contentBase64Str = base64.encode(utf8.encode(newUserContentJson));
+
+    final datajsonBase64Str = base64.encode(utf8.encode(dataJson));
+
+    if (totalUsersFiles.isMsg) {
+      List files = totalUsersFiles.message!.result as List;
+      if (files.contains('${siteInfo.authAddress}/content.json') &&
+          files.contains('${siteInfo.authAddress}/data.json')) {
+        var userDataJson = await instance
+            .fileGetFuture("data/users/${siteInfo.authAddress}/data.json");
+        if (userDataJson.isMsg) {
+          userDataObj =
+              UserData.fromJson(json.decode(userDataJson.message!.result));
+        }
+      } else {
+        await instance.fileWriteFuture(
+          "data/users/${siteInfo.authAddress}/data.json",
+          datajsonBase64Str,
+        );
+
+        await instance.fileWriteFuture(
+          "data/users/${siteInfo.authAddress}/content.json",
+          contentBase64Str,
+        );
+      }
+    }
   }
 
   Future loadTopicWidgetData({String? id}) async {
@@ -34,51 +139,58 @@ class ZeroNetController extends GetxController {
       uiController.currentRoute.value = Routes.home;
     }
   }
-}
 
-class UiController extends GetxController {
-  final searchStr = "".obs;
-  final currentRoute = Routes.home.obs;
-  final isSearchBarSelected = false.obs;
-  final selectedTopicIndex = 0.obs;
-  final listSorting = ListSorting.home.obs;
-  final dropdownvalue = "General".obs;
-  var searchController = Rx(TextEditingController());
+  Future loadDataForNormalOption() async {
+    List<TopicWidgetData> topicWidgetData = [];
 
-  void changeRoute(Routes route) {
-    currentRoute.value = route;
+    var queryResult = await instance.dbQueryFuture(
+      topicListQuery(),
+    );
+    if (queryResult.isMsg) {
+      for (var topic in queryResult.message!.result) {
+        topicWidgetData.add(
+          TopicWidgetData.fromJson(topic),
+        );
+      }
+      topicWidgetDataList.clear();
+      topicWidgetDataList.addAll(topicWidgetData);
+      topicWidgetData.clear();
+      uiController.filterRefresh.value = DateTime.now().millisecond.toString();
+    }
   }
 
-  void changeListSorting(ListSorting value) {
-    listSorting.value = value;
+  Future loadComments(String topicUri) async {
+    List<CommentWidgetData> commentData = [];
+
+    var queryResult = await instance.dbQueryFuture(
+      commentsQueryString(topicUri),
+    );
+    if (queryResult.isMsg) {
+      for (var topic in queryResult.message!.result) {
+        commentData.add(CommentWidgetData.fromJson(topic));
+      }
+      uiController.commentListData.value.clear();
+      uiController.commentListData.value.addAll(commentData);
+    }
+    uiController.isCommetsLoaded.value = true;
   }
-}
 
-enum Routes {
-  home,
+  Future saveUserData() async {
+    var userFile = await instance.fileWriteFuture(
+      "data/users/${siteInfo.authAddress}/data.json",
+      base64.encode(
+        utf8.encode(
+          json.encode(
+            userDataObj.toMap(),
+          ),
+        ),
+      ),
+    );
 
-  topicList,
-  topicView,
-  topicDetailScreen,
-  showProgressIndicator,
-  addTopicData,
-}
-
-enum ListSorting {
-  home,
-  features,
-  bugs,
-}
-
-extension ListSortExt on ListSorting {
-  String get pathString {
-    switch (this) {
-      case ListSorting.features:
-        return "Home,Features";
-      case ListSorting.bugs:
-        return "Home,Bugs";
-      default:
-        return "Home, ";
+    if (userFile.isMsg) {
+      //print("success");
+    } else {
+      print(userFile.error);
     }
   }
 }

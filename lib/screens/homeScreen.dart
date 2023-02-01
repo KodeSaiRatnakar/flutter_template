@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/consts.dart';
 import 'package:get/get.dart';
 import '../controllers/themeControlle.dart';
+import '../controllers/ui_controller.dart';
 import '../controllers/zeronet.dart';
 import '../main.dart';
 import '../extensions.dart';
+import '../models/models.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -32,7 +34,34 @@ class HomePage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              TopicsListView(mediaSize: mediaSize, theme: theme)
+              Obx(
+                () {
+                  sortListTopicData(uiController.homeSceenFilter);
+
+                  var _refresh = uiController.filterRefresh.value;
+                  return Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: topicWidgetDataList.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: HeaderButtons(mediaSize: mediaSize),
+                          );
+                        }
+                        return Topic(
+                          mediaSize: mediaSize,
+                          theme: theme,
+                          topicData: topicWidgetDataList[index - 1],
+                          index: index - 1,
+                        );
+                      },
+                    ),
+                  );
+                },
+              )
             ],
           ),
         ),
@@ -41,111 +70,186 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class TopicsListView extends StatelessWidget {
-  const TopicsListView({
+class HeaderButtons extends StatelessWidget {
+  const HeaderButtons({
     super.key,
     required this.mediaSize,
-    required this.theme,
   });
 
   final Size mediaSize;
-  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor:
-                threadItThemeController.currentTheme.value.backGroundColor,
-            floating: true,
-            bottom: PreferredSize(
-              preferredSize: Size(mediaSize.width,
-                  uiController.listSorting.value == ListSorting.home ? 62 : 10),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Obx(
-                  () {
-                    switch (uiController.listSorting.value) {
-                      case ListSorting.home:
-                        {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              PinnedFeatures(
-                                mediaSize: mediaSize,
-                                title: "Features",
-                                isSelected: uiController.listSorting.value ==
-                                    ListSorting.features,
-                              ),
-                              PinnedFeatures(
-                                mediaSize: mediaSize,
-                                title: "Bugs",
-                                isSelected: uiController.listSorting.value ==
-                                    ListSorting.bugs,
-                              )
-                            ],
-                          );
-                        }
-                      default:
-                        {
-                          List<String> pathString = uiController
-                              .listSorting.value.pathString
-                              .split(",");
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                pathString[0],
-                                style: threadItThemeController
-                                    .currentTheme.value.cardHeadingTextStyle
-                                    .copyWith(fontSize: 25),
-                                textAlign: TextAlign.start,
-                              ),
-                              Text(
-                                " > ${pathString[1]}",
-                                style: threadItThemeController
-                                    .currentTheme.value.cardHeadingTextStyle
-                                    .copyWith(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          );
-                        }
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: topicWidgetDataList.length,
-                  itemBuilder: (context, index) {
-                    return Topic(
-                      mediaSize: mediaSize,
-                      theme: theme,
-                      topicData: topicWidgetDataList[index],
-                      index: index,
-                    );
-                  },
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+    return Obx(
+      () {
+        switch (uiController.listSorting.value) {
+          case ListSorting.home:
+            {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  PinnedFeatures(
+                    mediaSize: mediaSize,
+                    title: "Features",
+                    isSelected:
+                        uiController.listSorting.value == ListSorting.features,
+                  ),
+                  PinnedFeatures(
+                    mediaSize: mediaSize,
+                    title: "Bugs",
+                    isSelected:
+                        uiController.listSorting.value == ListSorting.bugs,
+                  )
+                ],
+              );
+            }
+          default:
+            {
+              List<String> pathString =
+                  uiController.listSorting.value.pathString.split(",");
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    pathString[0],
+                    style: threadItThemeController
+                        .currentTheme.value.cardHeadingTextStyle
+                        .copyWith(fontSize: 25),
+                    textAlign: TextAlign.start,
+                  ),
+                  Text(
+                    " > ${pathString[1]}",
+                    style: threadItThemeController
+                        .currentTheme.value.cardHeadingTextStyle
+                        .copyWith(
+                      color: Colors.white,
+                      fontSize: 25,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                ],
+              );
+            }
+        }
+      },
     );
   }
 }
+
+// class TopicsListView extends StatelessWidget {
+//   const TopicsListView({
+//     super.key,
+//     required this.mediaSize,
+//     required this.theme,
+//   });
+
+//   final Size mediaSize;
+//   final ThemeData theme;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Expanded(
+//       child: Obx(() {
+//         sortListTopicData(uiController.homeSceenFilter);
+
+//         var _refresh = uiController.filterRefresh.value;
+
+//         return CustomScrollView(
+//           slivers: [
+//             SliverAppBar(
+//               backgroundColor:
+//                   threadItThemeController.currentTheme.value.backGroundColor,
+//               floating: true,
+//               bottom: PreferredSize(
+//                 preferredSize: Size(
+//                     mediaSize.width,
+//                     uiController.listSorting.value == ListSorting.home
+//                         ? 62
+//                         : 10),
+//                 child: Padding(
+//                   padding: const EdgeInsets.only(bottom: 10),
+//                   child: Obx(
+//                     () {
+//                       switch (uiController.listSorting.value) {
+//                         case ListSorting.home:
+//                           {
+//                             return Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 PinnedFeatures(
+//                                   mediaSize: mediaSize,
+//                                   title: "Features",
+//                                   isSelected: uiController.listSorting.value ==
+//                                       ListSorting.features,
+//                                 ),
+//                                 PinnedFeatures(
+//                                   mediaSize: mediaSize,
+//                                   title: "Bugs",
+//                                   isSelected: uiController.listSorting.value ==
+//                                       ListSorting.bugs,
+//                                 )
+//                               ],
+//                             );
+//                           }
+//                         default:
+//                           {
+//                             List<String> pathString = uiController
+//                                 .listSorting.value.pathString
+//                                 .split(",");
+//                             return Row(
+//                               mainAxisAlignment: MainAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   pathString[0],
+//                                   style: threadItThemeController
+//                                       .currentTheme.value.cardHeadingTextStyle
+//                                       .copyWith(fontSize: 25),
+//                                   textAlign: TextAlign.start,
+//                                 ),
+//                                 Text(
+//                                   " > ${pathString[1]}",
+//                                   style: threadItThemeController
+//                                       .currentTheme.value.cardHeadingTextStyle
+//                                       .copyWith(
+//                                     color: Colors.white,
+//                                     fontSize: 25,
+//                                   ),
+//                                   textAlign: TextAlign.start,
+//                                 ),
+//                               ],
+//                             );
+//                           }
+//                       }
+//                     },
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             SliverList(
+//               delegate: SliverChildListDelegate(
+//                 [
+//                   ListView.builder(
+//                     shrinkWrap: true,
+//                     physics: const NeverScrollableScrollPhysics(),
+//                     itemCount: topicWidgetDataList.length,
+//                     itemBuilder: (context, index) {
+//                       return Topic(
+//                         mediaSize: mediaSize,
+//                         theme: theme,
+//                         topicData: topicWidgetDataList[index],
+//                         index: index,
+//                       );
+//                     },
+//                   )
+//                 ],
+//               ),
+//             )
+//           ],
+//         );
+//       }),
+//     );
+//   }
+// }
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({
@@ -199,10 +303,39 @@ class CustomAppBar extends StatelessWidget {
                 color: themeColor,
               ),
             ),
-            headerIcon(
-                function: () {},
-                iconData: Icons.filter_alt_outlined,
-                color: themeColor),
+            PopupMenuButton(
+              color: threadItThemeController.currentTheme.value.cardColor,
+              icon: Icon(
+                Icons.filter_alt_outlined,
+                color: themeColor,
+                size: 30,
+              ),
+              onSelected: (String selectedFilter) {
+                if (itemsText.sublist(0, 5).contains(selectedFilter)) {
+                  uiController.homeSceenFilter.removeAt(0);
+                  uiController.homeSceenFilter.insert(0, selectedFilter);
+                } else {
+                  uiController.homeSceenFilter.removeAt(1);
+                  uiController.homeSceenFilter.insert(1, selectedFilter);
+                }
+              },
+              itemBuilder: (context) {
+                return itemsText
+                    .map(
+                      (txt) => PopupMenuItem<String>(
+                        value: txt,
+                        child: Text(
+                          txt,
+                          style: TextStyle(
+                              color: uiController.homeSceenFilter.contains(txt)
+                                  ? themeColor
+                                  : Colors.white),
+                        ),
+                      ),
+                    )
+                    .toList();
+              },
+            ),
             headerIcon(
               function: () {},
               iconData: Icons.language_outlined,
@@ -382,6 +515,7 @@ class Topic extends StatelessWidget {
                 onPressed: () {
                   uiController.selectedTopicIndex.value = index;
                   uiController.changeRoute(Routes.topicDetailScreen);
+                  zeroNetController.loadComments(topicData.rowTopicUri);
                 },
                 child: Text(
                   topicData.title,
@@ -408,58 +542,8 @@ class Topic extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(5),
-                      onTap: () {
-                        //   widget.topic.isLiked =
-                        //       widget.topic.isLiked ? false : true;
-                        //   if (widget.topic.isLiked) {
-                        //     widget.topic.totalLikes++;
-                        //     tempLike = 0;
-                        //   } else {
-                        //     widget.topic.totalLikes--;
-                        //   }
-                        //   setState(() {});
-                        // },
-                        // hoverColor: Colors.green,
-                        // onHover: (value) {
-                        //   if (!widget.topic.isLiked) {
-                        //     if (value) {
-                        //       onLikeButtonHover = true;
-                        //       tempLike = 1;
-                        //     } else {
-                        //       tempLike = 0;
-                        //       onLikeButtonHover = false;
-                        //     }
-                        //     setState(() {});
-                        //   }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(13),
-                          border: Border.all(
-                            color: onLikeButtonHover
-                                ? Colors.green
-                                : threadItThemeController
-                                    .currentTheme.value.primaryColor,
-                            width: 1,
-                          ),
-                          color: false ? Colors.green : Colors.transparent,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 1, horizontal: 16),
-                          child: Center(
-                            child: Text(
-                              (topicData.votes + tempLike).toString(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    TopicVoteButton(
+                        topicData: topicData, topicUri: topicData.rowTopicUri),
                     SizedBox(
                       width: mediaSize.width * 0.025,
                     ),
@@ -511,6 +595,93 @@ class Topic extends StatelessWidget {
                 height: 5,
               )
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TopicVoteButton extends StatefulWidget {
+  const TopicVoteButton({
+    super.key,
+    required this.topicData,
+    required this.topicUri,
+  });
+
+  final TopicWidgetData topicData;
+
+  final String topicUri;
+
+  @override
+  State<TopicVoteButton> createState() => _TopicVoteButtonState();
+}
+
+class _TopicVoteButtonState extends State<TopicVoteButton> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(5),
+      onTap: () async {
+        if (!zeroNetController.userDataObj.topicVote
+            .containsKey(widget.topicUri)) {
+          widget.topicData.votes += 1;
+
+          zeroNetController.userDataObj.topicVote[widget.topicUri] = 1;
+        } else {
+          widget.topicData.votes -= 1;
+
+          zeroNetController.userDataObj.topicVote.remove(widget.topicUri);
+        }
+        setState(() {});
+        zeroNetController.saveUserData();
+
+        //   widget.topic.isLiked =
+        //       widget.topic.isLiked ? false : true;
+        //   if (widget.topic.isLiked) {
+        //     widget.topic.totalLikes++;
+        //     tempLike = 0;
+        //   } else {
+        //     widget.topic.totalLikes--;
+        //   }
+        //   setState(() {});
+        // },
+        // hoverColor: Colors.green,
+        // onHover: (value) {
+        //   if (!widget.topic.isLiked) {
+        //     if (value) {
+        //       onLikeButtonHover = true;
+        //       tempLike = 1;
+        //     } else {
+        //       tempLike = 0;
+        //       onLikeButtonHover = false;
+        //     }
+        //     setState(() {});
+        //   }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(
+            color: false
+                ? Colors.green
+                : threadItThemeController.currentTheme.value.primaryColor,
+            width: 1,
+          ),
+          color: zeroNetController.userDataObj.topicVote
+                  .containsKey(widget.topicUri)
+              ? Colors.green
+              : Colors.transparent,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 16),
+          child: Center(
+            child: Text(
+              widget.topicData.votes.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ),

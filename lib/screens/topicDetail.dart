@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
+import 'package:get/get.dart';
+import '../controllers/ui_controller.dart';
 import '../controllers/zeronet.dart';
 import '../main.dart';
 import '../extensions.dart';
+import '../models/models.dart';
 import '../widgets/buttons.dart';
 
 class TopicDetailScreen extends StatelessWidget {
@@ -156,7 +159,7 @@ class TopicBody extends StatelessWidget {
                           vertical: 3, horizontal: 16),
                       child: Center(
                         child: Text(
-                          (topic.votes + tempLike).toString(),
+                          topic.votes.toString(),
                           style: threadItThemeController
                               .currentTheme.value.likeButtonDisabledTextStyle,
                           //         ?.copyWith(fontSize: 14),,
@@ -390,7 +393,7 @@ class CommentForm extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            SubmitButton(text: "Submit Comment", fontSize: 10),
+            SubmitButton(text: "Submit Comment", fontSize: 10, onTap: () {}),
             const SizedBox(
               height: 10,
             ),
@@ -408,61 +411,102 @@ class CommentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 20,
-      itemBuilder: ((context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Container(
-            decoration: BoxDecoration(
-              color: threadItThemeController.currentTheme.value.cardColor,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+    return Obx(
+      () {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: uiController.commentListData.value.length,
+          itemBuilder: ((context, index) {
+            CommentWidgetData commentItem =
+                uiController.commentListData.value[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: threadItThemeController.currentTheme.value.cardColor,
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 10,
+                      Row(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            commentItem.userName,
+                            style: TextStyle(
+                              color: theme.backgroundColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            " -- on ${((commentItem.commentAdded) * 1000).numDatetoStringDate}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12,
+                            ),
+                          ),
+                          (commentItem.modified != null)
+                              ? Text(
+                                  (commentItem.modified! * 1000)
+                                      .modifiedStrForAdmin,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              : const SizedBox(),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    color: threadItThemeController
+                                        .currentTheme.value.primaryColor,
+                                    width: 1),
+                                color: Colors.transparent),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 16),
+                              child: Center(
+                                child: Text(
+                                  commentItem.votes.toString(),
+                                  style: threadItThemeController.currentTheme
+                                      .value.likeButtonDisabledTextStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 15),
                       Text(
-                        "sfjdskgkldfjgkdf",
-                        style: TextStyle(
-                          color: theme.backgroundColor,
+                        commentItem.commentBody,
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Text(
-                        " -- on ${((topicData.lastCommentAdded ?? 0) * 1000).numDatetoStringDate}",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12,
-                        ),
+                      const SizedBox(
+                        height: 20,
                       )
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  Text(
-                    topicData.body,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         );
-      }),
+      },
     );
   }
 }
