@@ -7,7 +7,7 @@ import 'package:flutter_template/screens/add_topic.dart';
 import 'package:get/get.dart';
 
 import 'controllers/ui_controller.dart';
-import 'screens/homeScreen.dart';
+import 'screens/home_screen.dart';
 import 'screens/topicDetail.dart';
 
 const siteAddr = String.fromEnvironment(

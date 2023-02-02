@@ -18,12 +18,15 @@ class ZeroNetController extends GetxController {
   late SiteInfo siteInfo;
   late String userDataPath;
   late UserData userDataObj;
+  static String userName = "TempUser";
   ZeroNetController() {
     instance = ZeroNet.instance;
   }
 
   Future<void> connect() async {
-    await instance.connect(siteAddr, onEventMessage: onMessage);
+    await instance.connect(
+      siteAddr,
+    );
     await instance.channelJoinFuture(['siteChanged']);
   }
 
@@ -108,17 +111,32 @@ class ZeroNetController extends GetxController {
         if (userDataJson.isMsg) {
           userDataObj =
               UserData.fromJson(json.decode(userDataJson.message!.result));
+        } else {
+          userDataObj = UserData(
+              nextTopicId: 1,
+              nextCommentId: 1,
+              userTopics: [],
+              commentVote: {},
+              topicVote: {},
+              userComments: {});
         }
       } else {
+        await instance.fileWriteFuture(
+          "data/users/${siteInfo.authAddress}/content.json",
+          contentBase64Str,
+        );
         await instance.fileWriteFuture(
           "data/users/${siteInfo.authAddress}/data.json",
           datajsonBase64Str,
         );
 
-        await instance.fileWriteFuture(
-          "data/users/${siteInfo.authAddress}/content.json",
-          contentBase64Str,
-        );
+        userDataObj = UserData(
+            nextTopicId: 1,
+            nextCommentId: 1,
+            userTopics: [],
+            commentVote: {},
+            topicVote: {},
+            userComments: {});
       }
     }
   }
@@ -130,6 +148,7 @@ class ZeroNetController extends GetxController {
     var queryResult = await instance.dbQueryFuture(
       topicListQuery(parentTopicUri: id),
     );
+
     if (queryResult.isMsg) {
       for (var topic in queryResult.message!.result) {
         topicWidgetDataList.add(
@@ -170,7 +189,7 @@ class ZeroNetController extends GetxController {
         commentData.add(CommentWidgetData.fromJson(topic));
       }
       uiController.commentListData.value.clear();
-      uiController.commentListData.value.addAll(commentData);
+      uiController.commentListData.addAll(commentData);
     }
     uiController.isCommetsLoaded.value = true;
   }

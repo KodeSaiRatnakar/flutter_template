@@ -76,6 +76,30 @@ class TopicWidgetData extends Equatable {
       json['last_action'] as int,
     );
   }
+
+  factory TopicWidgetData.whenUserAddTopic(dynamic json) {
+    return TopicWidgetData(
+      json["topic_id"],
+      json["title"],
+      json["body"],
+      json["added"],
+      json["type"],
+      json["parent_topic_uri"],
+      json["json_id"],
+      json["topic_creator_user_name"],
+      json["topic_creator_address"],
+      json["row_topic_uri"],
+      null,
+      null,
+      null,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+    );
+  }
 }
 
 class CommentWidgetData {

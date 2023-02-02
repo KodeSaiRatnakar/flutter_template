@@ -1,3 +1,5 @@
+import 'models/user_data.dart';
+
 String bugsTopicId = "1627556797_12sCaEUFqE6g3JrDqmEA8pn9yrgxwkZQMe";
 String featuresRequest = "1627666223_12sCaEUFqE6g3JrDqmEA8pn9yrgxwkZQMe";
 
@@ -7,6 +9,7 @@ String topicListQuery({
 }) {
   const sql_sticky = '0 AS sticky';
   var where = '';
+
   if (parentTopicUri != null) {
     where =
         "WHERE parent_topic_uri = '$parentTopicUri' OR row_topic_uri = '$parentTopicUri'";
@@ -106,4 +109,23 @@ String commentsQueryString(String topicId) {
 			 LEFT JOIN keyvalue AS user ON (user.json_id = user_json_content.json_id AND user.key = 'cert_user_id')
 			WHERE comment.topic_uri = "$topicId" AND added < ${DateTime.now().millisecondsSinceEpoch / 1000}
 			ORDER BY added DESC''';
+}
+
+String getNewTopicAddQuery(String creatorAddr, int topicId) {
+  String query = '''
+ SELECT
+		  topic.*,
+		  topic_creator_user.value AS topic_creator_user_name,
+		  topic_creator_content.directory AS topic_creator_address,
+		  topic.topic_id || '_' || topic_creator_content.directory AS row_topic_uri,
+		  (SELECT COUNT(*) FROM topic_vote WHERE topic_vote.topic_uri = topic.topic_id || '_' || topic_creator_content.directory)+1 AS votes
+		 FROM topic
+		  LEFT JOIN json AS topic_creator_json ON (topic_creator_json.json_id = topic.json_id)
+		  LEFT JOIN json AS topic_creator_content ON (topic_creator_content.directory = topic_creator_json.directory AND topic_creator_content.file_name = 'content.json')
+		  LEFT JOIN keyvalue AS topic_creator_user ON (topic_creator_user.json_id = topic_creator_content.json_id AND topic_creator_user.key = 'cert_user_id')
+		 WHERE topic.topic_id ='$topicId'  AND topic_creator_address = '$creatorAddr'
+		 LIMIT 1
+     ''';
+
+  return query;
 }

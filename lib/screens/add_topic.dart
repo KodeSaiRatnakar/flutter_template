@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/consts.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
+import 'package:flutter_template/models/models.dart';
 import 'package:flutter_template/models/user_data.dart';
+import 'package:zeronet_ws/zeronet_ws.dart';
 import '../controllers/ui_controller.dart';
 import 'package:get/get.dart';
 
@@ -179,22 +182,36 @@ class AddTopicData extends StatelessWidget {
               height: 10,
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  zeroNetController.userDataObj.userTopics.add(
-                    Topic(
-                      topicId:
-                          (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
-                      title: topicTitleCtrl.text,
-                      body: topicBodyCtrl.text,
-                      added:
-                          (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
-                    ),
+                  Topic newTopic = Topic(
+                    topicId:
+                        (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
+                    title: topicTitleCtrl.text,
+                    body: topicBodyCtrl.text,
+                    added:
+                        (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
                   );
+                  zeroNetController.userDataObj.userTopics.add(newTopic);
 
                   topicBodyCtrl.clear();
                   topicTitleCtrl.clear();
+                  zeroNetController.userDataObj.nextTopicId += 1;
                   zeroNetController.saveUserData();
+                  var newTopicQuery =
+                      await zeroNetController.instance.dbQueryFuture(
+                    getNewTopicAddQuery(zeroNetController.siteInfo.authAddress!,
+                        newTopic.added),
+                  );
+                  if (newTopicQuery.isMsg) {
+                    topicWidgetDataList.insert(
+                      0,
+                      TopicWidgetData.whenUserAddTopic(
+                        newTopicQuery.message!.result[0],
+                      ),
+                    );
+                    uiController.currentRoute.value = Routes.home;
+                  }
                 }
               },
               style: const ButtonStyle(

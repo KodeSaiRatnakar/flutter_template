@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
+import 'package:flutter_template/models/user_data.dart';
 import 'package:get/get.dart';
 import '../controllers/ui_controller.dart';
 import '../controllers/zeronet.dart';
-import '../main.dart';
 import '../extensions.dart';
 import '../models/models.dart';
 import '../widgets/buttons.dart';
@@ -11,10 +11,10 @@ import '../widgets/buttons.dart';
 class TopicDetailScreen extends StatelessWidget {
   TopicWidgetData topic;
 
+  TopicDetailScreen({required this.topic, Key? key}) : super(key: key);
+
   List<String> pathString =
       uiController.listSorting.value.pathString.split(",");
-
-  TopicDetailScreen({required this.topic, Key? key}) : super(key: key);
 
   bool onLikeButtonHover = false;
   int tempLike = 0;
@@ -40,7 +40,10 @@ class TopicDetailScreen extends StatelessWidget {
                   height: 10,
                 ),
                 PathButtons(
-                    pathString: pathString, mediaSize: mediaSize, topic: topic),
+                  pathString: pathString,
+                  mediaSize: mediaSize,
+                  topic: topic,
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -55,6 +58,7 @@ class TopicDetailScreen extends StatelessWidget {
                 CommentForm(
                   mediaSize: mediaSize,
                   theme: theme,
+                  topicUri: topic.rowTopicUri,
                 ),
               ],
             ),
@@ -118,61 +122,8 @@ class TopicBody extends StatelessWidget {
             ),
             Row(
               children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: () {
-                    //   widget.topic.isLiked =
-                    //       widget.topic.isLiked ? false : true;
-                    //   if (widget.topic.isLiked) {
-                    //     widget.topic.totalLikes++;
-                    //     tempLike = 0;
-                    //   } else {
-                    //     widget.topic.totalLikes--;
-                    //   }
-                    //   setState(() {g});
-                    // },
-                    // hoverColor: Colors.green,
-                    // onHover: (value) {
-                    //   if (!widget.topic.isLiked) {
-                    //     if (value) {
-                    //       onLikeButtonHover = true;
-                    //       tempLike = 1;
-                    //     } else {
-                    //       tempLike = 0;
-                    //       onLikeButtonHover = false;
-                    //     }
-                    //     setState(() {});
-                    //   }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: onLikeButtonHover
-                                ? Colors.green
-                                : threadItThemeController
-                                    .currentTheme.value.primaryColor,
-                            width: 1),
-                        color: false ? Colors.green : Colors.transparent),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 16),
-                      child: Center(
-                        child: Text(
-                          topic.votes.toString(),
-                          style: threadItThemeController
-                              .currentTheme.value.likeButtonDisabledTextStyle,
-                          //         ?.copyWith(fontSize: 14),,
-                          // style: onLikeButtonHover ||
-                          //         widget.topic.isLiked
-                          //     ? theme.textTheme.bodyMedium?.copyWith(
-                          //         fontSize: 14, color: Colors.white)
-                          //     : theme.textTheme.bodyMedium
-                          //         ?.copyWith(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
+                TopicVoteButton(
+                  topicData: topic,
                 ),
                 SizedBox(
                   width: mediaSize.width * 0.05,
@@ -331,8 +282,14 @@ class HeadButton extends StatelessWidget {
 class CommentForm extends StatelessWidget {
   final ThemeData theme;
   final Size mediaSize;
-  const CommentForm({required this.theme, required this.mediaSize, super.key});
-
+  final String topicUri;
+  CommentForm(
+      {required this.theme,
+      required this.mediaSize,
+      required this.topicUri,
+      super.key});
+  TextEditingController commentTxtCtrl = TextEditingController();
+  GlobalKey<FormState> commentTxtFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -376,16 +333,28 @@ class CommentForm extends StatelessWidget {
                       threadItThemeController.currentTheme.value.primaryColor,
                 ),
               ),
-              child: TextField(
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: 15,
-                style: const TextStyle(color: Colors.white),
-                cursorColor: theme.backgroundColor,
-                decoration: const InputDecoration(
-                  fillColor: Colors.transparent,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
+              child: Form(
+                key: commentTxtFormKey,
+                child: TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1,
+                  maxLines: 15,
+                  controller: commentTxtCtrl,
+                  validator: (value) {
+                    if (value != null) {
+                      if (value.isNotEmpty) {
+                        return null;
+                      }
+                    }
+                    return "Enter comment";
+                  },
+                  style: const TextStyle(color: Colors.white),
+                  cursorColor: theme.backgroundColor,
+                  decoration: const InputDecoration(
+                    fillColor: Colors.transparent,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
@@ -393,7 +362,28 @@ class CommentForm extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            SubmitButton(text: "Submit Comment", fontSize: 10, onTap: () {}),
+            ElevatedButton(
+              onPressed: () {
+                if (commentTxtFormKey.currentState!.validate()) {
+                  submitComment(topicUri, commentTxtCtrl.text);
+                  commentTxtCtrl.clear();
+                }
+              },
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll<Color>(Colors.amber)),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Submit Comment",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -416,10 +406,9 @@ class CommentList extends StatelessWidget {
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: uiController.commentListData.value.length,
+          itemCount: uiController.commentListData.length,
           itemBuilder: ((context, index) {
-            CommentWidgetData commentItem =
-                uiController.commentListData.value[index];
+            CommentWidgetData commentItem = uiController.commentListData[index];
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Container(
@@ -466,26 +455,7 @@ class CommentList extends StatelessWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: threadItThemeController
-                                        .currentTheme.value.primaryColor,
-                                    width: 1),
-                                color: Colors.transparent),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 3, horizontal: 16),
-                              child: Center(
-                                child: Text(
-                                  commentItem.votes.toString(),
-                                  style: threadItThemeController.currentTheme
-                                      .value.likeButtonDisabledTextStyle,
-                                ),
-                              ),
-                            ),
-                          ),
+                          TopicCommentVoteButton(commentData: commentItem)
                         ],
                       ),
                       const SizedBox(height: 15),
@@ -509,4 +479,43 @@ class CommentList extends StatelessWidget {
       },
     );
   }
+}
+
+void submitComment(
+  String topicUri,
+  String bodyTxt,
+) async {
+  int dateAdded = (DateTime.now().millisecondsSinceEpoch / 1000).ceil();
+  if (zeroNetController.userDataObj.userComments.containsKey(topicUri)) {
+    zeroNetController.userDataObj.userComments[topicUri]!.add(
+      Comment(
+        commentId: zeroNetController.userDataObj.nextCommentId,
+        added: dateAdded,
+        body: bodyTxt,
+      ),
+    );
+  } else {
+    zeroNetController.userDataObj.userComments[topicUri] = [
+      Comment(
+        commentId: zeroNetController.userDataObj.nextCommentId,
+        added: dateAdded,
+        body: bodyTxt,
+      ),
+    ];
+  }
+
+  uiController.commentListData.insert(
+    0,
+    CommentWidgetData(
+      commentAdded: dateAdded,
+      commentBody: bodyTxt,
+      commentId: zeroNetController.userDataObj.nextCommentId,
+      topicUri: topicUri,
+      userAddress: zeroNetController.siteInfo.authAddress!,
+      userName: "TempUser",
+      votes: 0,
+    ),
+  );
+  zeroNetController.userDataObj.nextCommentId += 1;
+  await zeroNetController.saveUserData();
 }

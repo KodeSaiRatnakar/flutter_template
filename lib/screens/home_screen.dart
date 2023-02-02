@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/consts.dart';
+import '../consts.dart';
 import 'package:get/get.dart';
 import '../controllers/themeControlle.dart';
 import '../controllers/ui_controller.dart';
 import '../controllers/zeronet.dart';
-import '../main.dart';
 import '../extensions.dart';
 import '../models/models.dart';
+import '../widgets/buttons.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-  Color themeColor = const Color(0xff83EFFF);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,10 @@ class HomePage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              CustomAppBar(mediaSize: mediaSize, themeColor: themeColor),
+              CustomAppBar(
+                  mediaSize: mediaSize,
+                  themeColor:
+                      threadItThemeController.currentTheme.value.mainColor),
               SearchBarTextField(),
               const SizedBox(
                 height: 10,
@@ -543,7 +545,8 @@ class Topic extends StatelessWidget {
                 child: Row(
                   children: [
                     TopicVoteButton(
-                        topicData: topicData, topicUri: topicData.rowTopicUri),
+                      topicData: topicData,
+                    ),
                     SizedBox(
                       width: mediaSize.width * 0.025,
                     ),
@@ -595,93 +598,6 @@ class Topic extends StatelessWidget {
                 height: 5,
               )
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TopicVoteButton extends StatefulWidget {
-  const TopicVoteButton({
-    super.key,
-    required this.topicData,
-    required this.topicUri,
-  });
-
-  final TopicWidgetData topicData;
-
-  final String topicUri;
-
-  @override
-  State<TopicVoteButton> createState() => _TopicVoteButtonState();
-}
-
-class _TopicVoteButtonState extends State<TopicVoteButton> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(5),
-      onTap: () async {
-        if (!zeroNetController.userDataObj.topicVote
-            .containsKey(widget.topicUri)) {
-          widget.topicData.votes += 1;
-
-          zeroNetController.userDataObj.topicVote[widget.topicUri] = 1;
-        } else {
-          widget.topicData.votes -= 1;
-
-          zeroNetController.userDataObj.topicVote.remove(widget.topicUri);
-        }
-        setState(() {});
-        zeroNetController.saveUserData();
-
-        //   widget.topic.isLiked =
-        //       widget.topic.isLiked ? false : true;
-        //   if (widget.topic.isLiked) {
-        //     widget.topic.totalLikes++;
-        //     tempLike = 0;
-        //   } else {
-        //     widget.topic.totalLikes--;
-        //   }
-        //   setState(() {});
-        // },
-        // hoverColor: Colors.green,
-        // onHover: (value) {
-        //   if (!widget.topic.isLiked) {
-        //     if (value) {
-        //       onLikeButtonHover = true;
-        //       tempLike = 1;
-        //     } else {
-        //       tempLike = 0;
-        //       onLikeButtonHover = false;
-        //     }
-        //     setState(() {});
-        //   }
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(
-            color: false
-                ? Colors.green
-                : threadItThemeController.currentTheme.value.primaryColor,
-            width: 1,
-          ),
-          color: zeroNetController.userDataObj.topicVote
-                  .containsKey(widget.topicUri)
-              ? Colors.green
-              : Colors.transparent,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 16),
-          child: Center(
-            child: Text(
-              widget.topicData.votes.toString(),
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-            ),
           ),
         ),
       ),
