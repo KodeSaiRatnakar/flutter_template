@@ -19,6 +19,10 @@ class UiController extends GetxController {
   var commentListData = [].obs;
   var isCommetsLoaded = false.obs;
 
+  String? editableTopicTitle;
+  String? editableTopicBody;
+  int editableTopicId = 0;
+
   void changeRoute(Routes route) {
     currentRoute.value = route;
   }

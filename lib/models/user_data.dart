@@ -1,13 +1,16 @@
+import '../controllers/zeronet.dart';
+
 class Topic {
   final int topicId;
-  final String title;
-  final String body;
+  String title;
+  String body;
   final int added;
-  const Topic(
-      {required this.topicId,
-      required this.title,
-      required this.body,
-      required this.added});
+  Topic({
+    required this.topicId,
+    required this.title,
+    required this.body,
+    required this.added,
+  });
   factory Topic.fromJson(dynamic json) {
     return Topic(
         topicId: json['topic_id'],
@@ -31,7 +34,11 @@ class Comment {
   int commentId;
   int added;
   String body;
-  Comment({required this.commentId, required this.added, required this.body});
+  Comment({
+    required this.commentId,
+    required this.added,
+    required this.body,
+  });
 
   factory Comment.fromJson(dynamic json) {
     return Comment(
@@ -41,7 +48,11 @@ class Comment {
   }
 
   Map toMap() {
-    return {"comment_id": commentId, "body": body, "added": added};
+    return {
+      "comment_id": commentId,
+      "body": body,
+      "added": added,
+    };
   }
 }
 
@@ -109,5 +120,29 @@ class UserData {
     };
 
     return map;
+  }
+}
+
+class EditUserData {
+  static void editTopic(
+      {required String title, required String body, required topicId}) {
+    UserData userData = zeroNetController.userDataObj;
+    int index = userData.userTopics.indexWhere((obj) => obj.topicId == topicId);
+    userData.userTopics[index].title = title;
+    userData.userTopics[index].body = body;
+
+    int topicWidgetDataIndex =
+        topicWidgetDataList.indexWhere((obj) => obj.topicId == topicId);
+
+    topicWidgetDataList[topicWidgetDataIndex].title = title;
+    topicWidgetDataList[topicWidgetDataIndex].body = body;
+    zeroNetController.saveUserData();
+  }
+
+  static void deleteTopic({required int topicId}) {
+    UserData userData = zeroNetController.userDataObj;
+    userData.userTopics.removeWhere((obj) => obj.topicId == topicId);
+    topicWidgetDataList.removeWhere((obj) => obj.topicId == topicId);
+    zeroNetController.saveUserData();
   }
 }

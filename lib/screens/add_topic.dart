@@ -9,7 +9,9 @@ import '../controllers/ui_controller.dart';
 import 'package:get/get.dart';
 
 class AddTopicData extends StatelessWidget {
-  AddTopicData({super.key});
+  AddTopicData({this.title, this.body, super.key});
+  String? title;
+  String? body;
 
   var items = ["General", "Features", "Bugs"];
   TextEditingController topicTitleCtrl = TextEditingController();
@@ -20,6 +22,8 @@ class AddTopicData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThreadItThemes theme = threadItThemeController.currentTheme.value;
+    topicTitleCtrl.text = title ?? "";
+    topicBodyCtrl.text = body ?? "";
 
     return Scaffold(
       appBar: AppBar(
@@ -27,6 +31,8 @@ class AddTopicData extends StatelessWidget {
         leading: IconButton(
           onPressed: () {
             uiController.currentRoute.value = Routes.home;
+            uiController.editableTopicBody = null;
+            uiController.editableTopicTitle = null;
           },
           icon: const Icon(Icons.arrow_back),
         ),
@@ -184,39 +190,49 @@ class AddTopicData extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  Topic newTopic = Topic(
-                    topicId:
-                        (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
-                    title: topicTitleCtrl.text,
-                    body: topicBodyCtrl.text,
-                    added:
-                        (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
-                  );
-                  zeroNetController.userDataObj.userTopics.add(newTopic);
-
-                  topicBodyCtrl.clear();
-                  topicTitleCtrl.clear();
-                  zeroNetController.userDataObj.nextTopicId += 1;
-                  zeroNetController.saveUserData();
-                  var newTopicQuery =
-                      await zeroNetController.instance.dbQueryFuture(
-                    getNewTopicAddQuery(zeroNetController.siteInfo.authAddress!,
-                        newTopic.added),
-                  );
-                  if (newTopicQuery.isMsg) {
-                    topicWidgetDataList.insert(
-                      0,
-                      TopicWidgetData.whenUserAddTopic(
-                        newTopicQuery.message!.result[0],
-                      ),
+                  if (title == null && body == null) {
+                    Topic newTopic = Topic(
+                      topicId:
+                          (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
+                      title: topicTitleCtrl.text,
+                      body: topicBodyCtrl.text,
+                      added:
+                          (DateTime.now().millisecondsSinceEpoch / 1000).ceil(),
                     );
-                    uiController.currentRoute.value = Routes.home;
+                    zeroNetController.userDataObj.userTopics.add(newTopic);
+
+                    topicBodyCtrl.clear();
+                    topicTitleCtrl.clear();
+                    zeroNetController.userDataObj.nextTopicId += 1;
+                    zeroNetController.saveUserData();
+                    var newTopicQuery =
+                        await zeroNetController.instance.dbQueryFuture(
+                      getNewTopicAddQuery(
+                          zeroNetController.siteInfo.authAddress!,
+                          newTopic.added),
+                    );
+                    if (newTopicQuery.isMsg) {
+                      topicWidgetDataList.insert(
+                        0,
+                        TopicWidgetData.whenUserAddTopic(
+                          newTopicQuery.message!.result[0],
+                        ),
+                      );
+                    }
+                  } else {
+                    EditUserData.editTopic(
+                        title: topicTitleCtrl.text,
+                        body: topicBodyCtrl.text,
+                        topicId: uiController.editableTopicId);
                   }
+                  uiController.currentRoute.value = Routes.home;
+                  uiController.editableTopicBody = null;
+                  uiController.editableTopicTitle = null;
                 }
               },
               style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(Colors.amber)),
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.amber),
+              ),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(

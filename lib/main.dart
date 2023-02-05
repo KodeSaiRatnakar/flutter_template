@@ -10,9 +10,10 @@ import 'controllers/ui_controller.dart';
 import 'screens/home_screen.dart';
 import 'screens/topicDetail.dart';
 
+const siteAddress = "1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH";
 const siteAddr = String.fromEnvironment(
   'SITE_ADDR',
-  defaultValue: '15UYrA7aXr2Nto1Gg4yWXpY3EAJwafMTNk',
+  defaultValue: '1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH',
 );
 int index = 0;
 
@@ -65,7 +66,10 @@ class MyHomePage extends StatelessWidget {
             }
           case Routes.addTopicData:
             {
-              return AddTopicData();
+              return AddTopicData(
+                body: uiController.editableTopicBody,
+                title: uiController.editableTopicTitle,
+              );
             }
           default:
             {

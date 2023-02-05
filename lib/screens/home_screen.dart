@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/models/user_data.dart';
+import 'package:flutter_template/screens/add_topic.dart';
 import '../consts.dart';
 import 'package:get/get.dart';
 import '../controllers/themeControlle.dart';
@@ -53,7 +55,7 @@ class HomePage extends StatelessWidget {
                             child: HeaderButtons(mediaSize: mediaSize),
                           );
                         }
-                        return Topic(
+                        return TopicTile(
                           mediaSize: mediaSize,
                           theme: theme,
                           topicData: topicWidgetDataList[index - 1],
@@ -426,8 +428,9 @@ class PinnedFeatures extends StatelessWidget {
                     child: Text(
                       "2023",
                       style: TextStyle(
-                          color: Color(0xff83EFFF),
-                          fontWeight: FontWeight.w500),
+                        color: Color(0xff83EFFF),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                   Padding(
@@ -482,13 +485,13 @@ class PinnedFeatures extends StatelessWidget {
   }
 }
 
-class Topic extends StatelessWidget {
+class TopicTile extends StatelessWidget {
   final Size mediaSize;
   final ThemeData theme;
   final int index;
 
   TopicWidgetData topicData;
-  Topic({
+  TopicTile({
     required this.mediaSize,
     required this.topicData,
     required this.index,
@@ -503,103 +506,138 @@ class Topic extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: threadItThemeController.currentTheme.value.cardColor,
-            borderRadius: BorderRadius.circular(5)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.5, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextButton(
-                onPressed: () {
-                  uiController.selectedTopicIndex.value = index;
-                  uiController.changeRoute(Routes.topicDetailScreen);
-                  zeroNetController.loadComments(topicData.rowTopicUri);
-                },
-                child: Text(
-                  topicData.title,
-                  style: threadItThemeController
-                      .currentTheme.value.cardHeadingTextStyle,
-                  maxLines: 1,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, bottom: 20),
-                child: SizedBox(
-                  child: Text(
-                    topicData.body,
-                    style: threadItThemeController
-                        .currentTheme.value.cardBodyTextStyle,
-                    maxLines: 1,
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: threadItThemeController.currentTheme.value.cardColor,
+                borderRadius: BorderRadius.circular(5)),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.5, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      uiController.selectedTopicIndex.value = index;
+                      uiController.changeRoute(Routes.topicDetailScreen);
+                      zeroNetController.loadComments(topicData.rowTopicUri);
+                    },
+                    child: Text(
+                      topicData.title,
+                      style: threadItThemeController
+                          .currentTheme.value.cardHeadingTextStyle,
+                      maxLines: 1,
+                    ),
                   ),
-                ),
-              ),
-              Text(topicData.sticky != 0 ? "yes" : ""),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 8.0,
-                ),
-                child: Row(
-                  children: [
-                    TopicVoteButton(
-                      topicData: topicData,
-                    ),
-                    SizedBox(
-                      width: mediaSize.width * 0.025,
-                    ),
-                    SizedBox(
-                      child: RichText(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, bottom: 20),
+                    child: SizedBox(
+                      child: Text(
+                        topicData.body,
+                        style: threadItThemeController
+                            .currentTheme.value.cardBodyTextStyle,
                         maxLines: 1,
-                        text: TextSpan(
-                          text: '',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w300,
-                            color: Colors.black,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: topicData.commentsNum.toString(),
-                              style: threadItThemeController
-                                  .currentTheme.value.cardBodyMedium,
-                            ),
-                            TextSpan(
-                              text: topicData.commentsNum > 1
-                                  ? " comments "
-                                  : " comment ",
-                              style: threadItThemeController
-                                  .currentTheme.value.cardBodyMedium
-                                  .copyWith(
-                                fontSize: 13,
-                              ),
-                            ),
-                            topicData.commentsNum == 0
-                                ? const TextSpan()
-                                : TextSpan(
-                                    text: ((topicData.lastCommentAdded ?? 0) *
-                                            1000)
-                                        .modifiedStrForComment,
-                                    style: threadItThemeController.currentTheme
-                                        .value.commentOrLikeTimeStyle
-                                        .copyWith(
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                          ],
-                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Text(topicData.sticky != 0 ? "yes" : ""),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8.0,
+                    ),
+                    child: Row(
+                      children: [
+                        TopicVoteButton(
+                          topicData: topicData,
+                        ),
+                        SizedBox(
+                          width: mediaSize.width * 0.025,
+                        ),
+                        SizedBox(
+                          child: RichText(
+                            maxLines: 1,
+                            text: TextSpan(
+                              text: '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: topicData.commentsNum.toString(),
+                                  style: threadItThemeController
+                                      .currentTheme.value.cardBodyMedium,
+                                ),
+                                TextSpan(
+                                  text: topicData.commentsNum > 1
+                                      ? " comments "
+                                      : " comment ",
+                                  style: threadItThemeController
+                                      .currentTheme.value.cardBodyMedium
+                                      .copyWith(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                topicData.commentsNum == 0
+                                    ? const TextSpan()
+                                    : TextSpan(
+                                        text:
+                                            ((topicData.lastCommentAdded ?? 0) *
+                                                    1000)
+                                                .modifiedStrForComment,
+                                        style: threadItThemeController
+                                            .currentTheme
+                                            .value
+                                            .commentOrLikeTimeStyle
+                                            .copyWith(
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  )
+                ],
               ),
-              const SizedBox(
-                height: 5,
-              )
-            ],
+            ),
           ),
-        ),
+          topicData.topicCreatorAddress ==
+                  zeroNetController.siteInfo.authAddress
+              ? Align(
+                  alignment: Alignment.topRight,
+                  child: PopupMenuButton(
+                    onSelected: (selectedOption) {
+                      if (selectedOption == "Edit Topic") {
+                        uiController.editableTopicTitle = topicData.title;
+                        uiController.editableTopicBody = topicData.body;
+                        uiController.editableTopicId = topicData.topicId;
+                        uiController.currentRoute.value = Routes.addTopicData;
+                      } else {
+                        EditUserData.deleteTopic(topicId: topicData.topicId);
+                      }
+                    },
+                    itemBuilder: (context) {
+                      return ["Edit Topic", "Delete Topic"].map(
+                        (txt) {
+                          return PopupMenuItem<String>(
+                            value: txt,
+                            child: Text(txt),
+                          );
+                        },
+                      ).toList();
+                    },
+                  ))
+              : const SizedBox()
+        ],
       ),
     );
   }

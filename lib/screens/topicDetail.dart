@@ -349,7 +349,7 @@ class CommentForm extends StatelessWidget {
                     return "Enter comment";
                   },
                   style: const TextStyle(color: Colors.white),
-                  cursorColor: theme.backgroundColor,
+                  cursorColor: theme.colorScheme.background,
                   decoration: const InputDecoration(
                     fillColor: Colors.transparent,
                     border: OutlineInputBorder(
