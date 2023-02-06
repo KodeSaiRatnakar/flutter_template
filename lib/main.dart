@@ -9,7 +9,6 @@ import 'controllers/site_ui.dart';
 import 'screens/home_screen.dart';
 import 'screens/topic_details.dart';
 
-const siteAddress = "1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH";
 const siteAddr = String.fromEnvironment(
   'SITE_ADDR',
   defaultValue: '1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH',
@@ -49,32 +48,21 @@ class MyHomePage extends StatelessWidget {
             return Scaffold(
               backgroundColor:
                   threadItThemeController.currentTheme.value.backGroundColor,
-              body: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              body: const Center(child: CircularProgressIndicator()),
             );
           case Routes.home:
-            {
-              return HomePage();
-            }
+            return const HomePage();
           case Routes.topicDetailScreen:
-            {
-              return TopicDetailScreen(
-                topic:
-                    topicWidgetDataList[uiController.selectedTopicIndex.value],
-              );
-            }
+            return TopicDetailScreen(
+              topic: topicWidgetDataList[uiController.selectedTopicIndex.value],
+            );
           case Routes.addTopicData:
-            {
-              return AddTopicData(
-                body: uiController.editableTopicBody,
-                title: uiController.editableTopicTitle,
-              );
-            }
+            return AddTopicData(
+              body: uiController.editableTopicBody,
+              title: uiController.editableTopicTitle,
+            );
           default:
-            {
-              return Container();
-            }
+            return Container();
         }
       },
     );

@@ -92,7 +92,7 @@ class ZeroNetController extends GetxController {
 
     final newUserContentJson = '''
 {
-  "address": "$siteAddress",
+  "address": "$siteAddr",
   "files": {},
   "inner_path": "data/users/${siteInfo.authAddress}/content.json",
   "modified": ${(DateTime.now().millisecondsSinceEpoch / 1000).ceil()},
