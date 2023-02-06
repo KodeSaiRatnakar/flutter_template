@@ -22,7 +22,7 @@ class AddTopicData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThreadItThemes theme = threadItThemeController.currentTheme.value;
+    SiteTheme theme = threadItThemeController.currentTheme.value;
     topicTitleCtrl.text = title ?? "";
     topicBodyCtrl.text = body ?? "";
     double mediaWidth = MediaQuery.of(context).size.width;

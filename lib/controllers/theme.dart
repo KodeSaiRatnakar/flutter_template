@@ -3,12 +3,15 @@ import 'package:get/get.dart';
 
 ThemeController threadItThemeController = Get.put(ThemeController());
 
-enum ThreadItThemes { darkTheme, lightTheme }
+enum SiteTheme {
+  kDark,
+  kLight,
+}
 
-extension ThemeExt on ThreadItThemes {
+extension ThemeExt on SiteTheme {
   Color get mainColor {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const Color(0xff83EFFF);
       default:
         return const Color(0xff2e5a61);
@@ -17,7 +20,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get primaryColor {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const Color(0xff2e5a61);
       default:
         return const Color(0xff2e5a61);
@@ -26,7 +29,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get cardColor {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const Color(0xff373844);
       default:
         return const Color(0xff2e5a61);
@@ -35,7 +38,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get backGroundColor {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const Color(0xff2e2b32);
       default:
         return const Color(0xff2e5a61);
@@ -44,7 +47,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get topicAddBorderColor {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const Color(0xff4c5864);
       default:
         return const Color(0xff2e5a61);
@@ -53,7 +56,7 @@ extension ThemeExt on ThreadItThemes {
 
   Color get textColor {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return Colors.white70;
       default:
         return Colors.black;
@@ -62,7 +65,7 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get cardHeadingTextStyle {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const TextStyle(
           color: Color(0xff83EFFF),
           fontWeight: FontWeight.w500,
@@ -78,7 +81,7 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get cardBodyTextStyle {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const TextStyle(
           color: Color(0xffe1e1e1),
           fontWeight: FontWeight.w400,
@@ -94,7 +97,7 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get cardBodyMedium {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const TextStyle(
           color: Color(
             0xffe1e1e1,
@@ -113,7 +116,7 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get likeButtonDisabledTextStyle {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const TextStyle(
           color: Color(0xff83EFFF),
           fontWeight: FontWeight.w500,
@@ -130,7 +133,7 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get commentUserTextStyle {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const TextStyle(
           color: Color(0xff83EFFF),
           fontWeight: FontWeight.w400,
@@ -147,7 +150,7 @@ extension ThemeExt on ThreadItThemes {
 
   TextStyle get commentOrLikeTimeStyle {
     switch (this) {
-      case ThreadItThemes.darkTheme:
+      case SiteTheme.kDark:
         return const TextStyle(
           color: Colors.white38,
           fontSize: 10,
@@ -164,5 +167,5 @@ extension ThemeExt on ThreadItThemes {
 }
 
 class ThemeController extends GetxController {
-  var currentTheme = ThreadItThemes.darkTheme.obs;
+  var currentTheme = SiteTheme.kDark.obs;
 }

@@ -183,7 +183,7 @@ class ZeroNetController extends GetxController {
       for (var topic in queryResult.message!.result) {
         commentData.add(CommentWidgetData.fromJson(topic));
       }
-      uiController.commentListData.value.clear();
+      uiController.commentListData.clear();
       uiController.commentListData.addAll(commentData);
     }
     uiController.isCommetsLoaded.value = true;
