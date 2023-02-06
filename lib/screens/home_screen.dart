@@ -444,25 +444,22 @@ class PinnedFeatures extends StatelessWidget {
                       onPressed: () {
                         switch (title) {
                           case "Features":
-                            {
-                              zeroNetController.loadTopicWidgetData(
-                                id: featuresRequest,
-                              );
-                              uiController.changeListSorting(
-                                ListSorting.features,
-                              );
-                              break;
-                            }
+                            zeroNetController.loadTopicWidgetData(
+                              id: featuresRequest,
+                            );
+                            uiController.changeListSorting(
+                              ListSorting.features,
+                            );
+                            break;
+
                           case "Bugs":
-                            {
-                              zeroNetController.loadTopicWidgetData(
-                                id: bugsTopicId,
-                              );
-                              uiController.changeListSorting(
-                                ListSorting.bugs,
-                              );
-                              break;
-                            }
+                            zeroNetController.loadTopicWidgetData(
+                              id: bugsTopicId,
+                            );
+                            uiController.changeListSorting(
+                              ListSorting.bugs,
+                            );
+                            break;
                         }
                       },
                       child: const Text(
@@ -489,8 +486,8 @@ class TopicTile extends StatelessWidget {
   final Size mediaSize;
   final ThemeData theme;
   final int index;
+  final TopicWidgetData topicData;
 
-  TopicWidgetData topicData;
   TopicTile({
     required this.mediaSize,
     required this.topicData,

@@ -68,7 +68,7 @@ class ZeroNetController extends GetxController {
     }
   }
 
-  Future callSiteInfo() async {
+  Future getSiteInfo() async {
     var siteInformation = await instance.siteInfoFuture();
     siteInfo = siteInformation;
     if (siteInfo.certUserId != null) {
@@ -131,14 +131,7 @@ class ZeroNetController extends GetxController {
           "data/users/${siteInfo.authAddress}/data.json",
           datajsonBase64Str,
         );
-
-        userDataObj = UserData(
-            nextTopicId: 1,
-            nextCommentId: 1,
-            userTopics: [],
-            commentVote: {},
-            topicVote: {},
-            userComments: {});
+        userDataObj = UserData.def();
       }
     }
   }
