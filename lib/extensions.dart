@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-import 'controllers/ui_controller.dart';
+import 'controllers/site_ui.dart';
 
-extension intExt on int {
+extension IntExt on int {
   DateTime get toDate {
     return DateTime.fromMillisecondsSinceEpoch(this);
   }

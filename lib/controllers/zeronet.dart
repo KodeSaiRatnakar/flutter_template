@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:zeronet_ws/extensions/callbacks.dart';
 import 'package:zeronet_ws/models/models.dart';
 import '../consts.dart';
 import '../models/user_data.dart';
@@ -8,7 +7,7 @@ import 'package:get/get.dart';
 import '../models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 import '../main.dart';
-import 'ui_controller.dart';
+import 'site_ui.dart';
 
 final zeroNetController = Get.put(ZeroNetController());
 
@@ -47,7 +46,7 @@ class ZeroNetController extends GetxController {
 
           var pattern = 'data/users/';
 
-          if (path.startsWith(pattern + '1') && path.endsWith('.json')) {
+          if (path.startsWith('${pattern}1') && path.endsWith('.json')) {
             debugPrint('User Data Changed');
             final userFile = path.replaceFirst(pattern, '');
             final dataOrContentJsonFile =
@@ -81,23 +80,24 @@ class ZeroNetController extends GetxController {
   Future loadUserDirectory() async {
     var totalUsersFiles = await instance.fileListFuture("data/users");
 
-    const String dataJson = '''{
+    const String dataJson = '''
+{
 	"next_topic_id": 1,
 	"topic": [],
 	"topic_vote": {},
 	"next_comment_id": 1,
 	"comment": {},
 	"comment_vote": {}
-  }''';
+}''';
 
     final newUserContentJson = '''
 {
- "address": "$siteAddress",
-"files": {},
- "inner_path": "data/users/${siteInfo.authAddress}/content.json",
- "modified": ${(DateTime.now().millisecondsSinceEpoch / 1000).ceil()},
- "signs": {"${siteInfo.authAddress}":""}}
-''';
+  "address": "$siteAddress",
+  "files": {},
+  "inner_path": "data/users/${siteInfo.authAddress}/content.json",
+  "modified": ${(DateTime.now().millisecondsSinceEpoch / 1000).ceil()},
+  "signs": {"${siteInfo.authAddress}":""}
+}''';
 
     final contentBase64Str = base64.encode(utf8.encode(newUserContentJson));
 

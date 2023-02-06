@@ -1,14 +1,13 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/controllers/commons.dart';
-import 'package:flutter_template/controllers/themeControlle.dart';
+import 'package:flutter_template/controllers/common.dart';
+import 'package:flutter_template/controllers/theme.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
 import 'package:flutter_template/screens/add_topic.dart';
 import 'package:get/get.dart';
 
-import 'controllers/ui_controller.dart';
+import 'controllers/site_ui.dart';
 import 'screens/home_screen.dart';
-import 'screens/topicDetail.dart';
+import 'screens/topic_details.dart';
 
 const siteAddress = "1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH";
 const siteAddr = String.fromEnvironment(
@@ -61,8 +60,9 @@ class MyHomePage extends StatelessWidget {
           case Routes.topicDetailScreen:
             {
               return TopicDetailScreen(
-                  topic: topicWidgetDataList[
-                      uiController.selectedTopicIndex.value]);
+                topic:
+                    topicWidgetDataList[uiController.selectedTopicIndex.value],
+              );
             }
           case Routes.addTopicData:
             {

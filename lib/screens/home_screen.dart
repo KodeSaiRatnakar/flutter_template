@@ -3,15 +3,15 @@ import 'package:flutter_template/models/user_data.dart';
 import 'package:flutter_template/screens/add_topic.dart';
 import '../consts.dart';
 import 'package:get/get.dart';
-import '../controllers/themeControlle.dart';
-import '../controllers/ui_controller.dart';
+import '../controllers/theme.dart';
+import '../controllers/site_ui.dart';
 import '../controllers/zeronet.dart';
 import '../extensions.dart';
 import '../models/models.dart';
 import '../widgets/buttons.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/controllers/themeControlle.dart';
+import 'package:flutter_template/controllers/theme.dart';
 import 'package:flutter_template/models/user_data.dart';
 import 'package:get/get.dart';
-import '../controllers/ui_controller.dart';
+import '../controllers/site_ui.dart';
 import '../controllers/zeronet.dart';
 import '../extensions.dart';
 import '../models/models.dart';

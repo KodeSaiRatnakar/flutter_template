@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/consts.dart';
-import 'package:flutter_template/controllers/themeControlle.dart';
+import 'package:flutter_template/controllers/theme.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
 import 'package:flutter_template/extensions.dart';
 import 'package:flutter_template/models/models.dart';
 import 'package:flutter_template/models/user_data.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
-import '../controllers/ui_controller.dart';
+import '../controllers/site_ui.dart';
 import 'package:get/get.dart';
 
 class AddTopicData extends StatelessWidget {
