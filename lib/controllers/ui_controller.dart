@@ -109,3 +109,15 @@ void sortListTopicData(List<String> filterData) {
     );
   }
 }
+
+enum EditingButtons {
+  bold,
+  italic,
+  link,
+  strikeOut,
+
+  heading,
+  unOrderredList,
+  orderedList,
+  quotes
+}

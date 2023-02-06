@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:zeronet_ws/extensions/callbacks.dart';
 import 'package:zeronet_ws/models/models.dart';
 import '../consts.dart';
 import '../models/user_data.dart';
@@ -109,16 +110,17 @@ class ZeroNetController extends GetxController {
         var userDataJson = await instance
             .fileGetFuture("data/users/${siteInfo.authAddress}/data.json");
         if (userDataJson.isMsg) {
-          userDataObj =
-              UserData.fromJson(json.decode(userDataJson.message!.result));
+          var result2 = userDataJson.message!.result;
+          try {
+            var decode = json.decode(result2);
+            userDataObj = UserData.fromJson(decode);
+          } catch (e) {
+            // handle this case
+            userDataObj = UserData.def();
+          }
         } else {
-          userDataObj = UserData(
-              nextTopicId: 1,
-              nextCommentId: 1,
-              userTopics: [],
-              commentVote: {},
-              topicVote: {},
-              userComments: {});
+          // handle this case
+          userDataObj = UserData.def();
         }
       } else {
         await instance.fileWriteFuture(

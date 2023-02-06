@@ -1,5 +1,9 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
+import 'controllers/ui_controller.dart';
+
 extension intExt on int {
   DateTime get toDate {
     return DateTime.fromMillisecondsSinceEpoch(this);
@@ -61,13 +65,29 @@ extension intExt on int {
   }
 }
 
-extension StringExt on String {
-  String get checkRecomment {
-    String editedStr = "";
-
-    if (this.startsWith(">[")) {
-      // editedStr = this.split(":")[1]
+extension EditingIcon on EditingButtons {
+  IconData getEditingIcon() {
+    switch (this) {
+      case EditingButtons.bold:
+        return Icons.format_bold_outlined;
+      case EditingButtons.italic:
+        return Icons.format_italic_outlined;
+      case EditingButtons.link:
+        return Icons.attachment;
+      case EditingButtons.heading:
+        return Icons.title;
+      case EditingButtons.orderedList:
+        return Icons.list;
+      case EditingButtons.unOrderredList:
+        return Icons.list;
+      case EditingButtons.quotes:
+        return Icons.format_quote;
+      case EditingButtons.strikeOut:
+        return Icons.strikethrough_s;
     }
-    return editedStr;
+  }
+
+  void onAction() {
+    print(this.toString());
   }
 }

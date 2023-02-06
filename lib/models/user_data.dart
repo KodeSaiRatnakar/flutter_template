@@ -12,11 +12,16 @@ class Topic {
     required this.added,
   });
   factory Topic.fromJson(dynamic json) {
-    return Topic(
+    try {
+      return Topic(
         topicId: json['topic_id'],
         title: json['title'],
-        body: json['body'],
-        added: json['added']);
+        body: json.containsKey('body') ? json['body'] : "",
+        added: json['added'],
+      );
+    } catch (e) {
+      throw "Invalid Topic Data";
+    }
   }
 
   Map toMap() {
@@ -41,10 +46,15 @@ class Comment {
   });
 
   factory Comment.fromJson(dynamic json) {
-    return Comment(
+    try {
+      return Comment(
         commentId: json['comment_id'],
         added: json['added'],
-        body: json['body']);
+        body: json['body'],
+      );
+    } catch (e) {
+      throw "Invalid Comment Data";
+    }
   }
 
   Map toMap() {
@@ -78,19 +88,30 @@ class UserData {
     Map<String, List<Comment>> commentData = {};
 
     for (var topic in json["topic"]) {
-      topicList.add(
-        Topic.fromJson(topic),
-      );
+      try {
+        var topic2 = Topic.fromJson(topic);
+        topicList.add(topic2);
+      } catch (e) {
+        // todo this case
+      }
     }
 
     for (var commentKey in Map.from(json["comment"]).keys) {
-      commentData[commentKey] = List<Comment>.from(
-        json["comment"][commentKey]
-            .map(
-              (obj) => Comment.fromJson(obj),
-            )
-            .toList(),
-      );
+      List<Comment> commentsList = [];
+      for (var commentObj in json["comment"][commentKey]) {
+        try {
+          commentsList.add(Comment.fromJson(commentObj));
+        } catch (e) {
+          // todo handle this case
+        }
+      }
+      commentData[commentKey] = commentsList;
+      commentsList.clear();
+      //   json["comment"][commentKey]
+      //       .map(
+      //         (obj) => Comment.fromJson(obj),
+      //       )
+      //       .toList(),);
     }
 
     return UserData(
@@ -120,6 +141,17 @@ class UserData {
     };
 
     return map;
+  }
+
+  factory UserData.def() {
+    return UserData(
+      nextTopicId: 1,
+      nextCommentId: 1,
+      userTopics: [],
+      commentVote: {},
+      topicVote: {},
+      userComments: {},
+    );
   }
 }
 

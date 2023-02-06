@@ -306,11 +306,14 @@ class CommentForm extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(
-                  "18sgsdfg2sdgh5fghgfh4gh2gfh2fgh4h2dh@cryptoid.bit",
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: theme.backgroundColor.withOpacity(0.7),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "18sgsdfg2sdgh5fghgfh4gh2gfh2fgh4h2dh@cryptoid.bit",
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: theme.backgroundColor.withOpacity(0.7),
+                    ),
                   ),
                 ),
                 const Text(
