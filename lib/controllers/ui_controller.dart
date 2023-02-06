@@ -115,9 +115,9 @@ enum EditingButtons {
   italic,
   link,
   strikeOut,
-
+  underLine,
   heading,
-  unOrderredList,
   orderedList,
+  unOrderredList,
   quotes
 }

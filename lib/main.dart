@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/controllers/commons.dart';
 import 'package:flutter_template/controllers/themeControlle.dart';
@@ -10,10 +9,14 @@ import 'controllers/ui_controller.dart';
 import 'screens/home_screen.dart';
 import 'screens/topicDetail.dart';
 
-const siteAddress = "1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH";
-const siteAddr = String.fromEnvironment(
+List<String> testingSites = [
+  '18fSGUS2SUUhYP8rfHJg3j27y938UADHCp',
+  '1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH'
+];
+final siteAddress = testingSites[1];
+final siteAddr = String.fromEnvironment(
   'SITE_ADDR',
-  defaultValue: '1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH',
+  defaultValue: testingSites[1],
 );
 int index = 0;
 

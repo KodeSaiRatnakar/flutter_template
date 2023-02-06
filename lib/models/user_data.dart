@@ -106,7 +106,6 @@ class UserData {
         }
       }
       commentData[commentKey] = commentsList;
-      commentsList.clear();
       //   json["comment"][commentKey]
       //       .map(
       //         (obj) => Comment.fromJson(obj),
