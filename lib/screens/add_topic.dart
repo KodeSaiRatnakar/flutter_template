@@ -5,6 +5,7 @@ import 'package:flutter_template/controllers/zeronet.dart';
 import 'package:flutter_template/extensions.dart';
 import 'package:flutter_template/models/models.dart';
 import 'package:flutter_template/models/user_data.dart';
+import 'package:flutter_template/widgets/text_editor.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 import '../controllers/site_ui.dart';
 import 'package:get/get.dart';
@@ -168,58 +169,7 @@ class AddTopicData extends StatelessWidget {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 40,
-                                width: MediaQuery.of(context).size.width,
-                                color: threadItThemeController
-                                    .currentTheme.value.topicAddBorderColor,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: EditingButtons.values.length,
-                                  itemBuilder: (context, index) {
-                                    var currentButton =
-                                        EditingButtons.values[index];
-                                    return InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(
-                                          currentButton.getEditingIcon(),
-                                          color: threadItThemeController
-                                              .currentTheme.value.textColor,
-                                        ),
-                                      ),
-                                      onTap: () => currentButton.onAction(),
-                                    );
-                                  },
-                                ),
-                              ),
-                              TextFormField(
-                                style: theme.cardBodyTextStyle,
-                                keyboardType: TextInputType.multiline,
-                                controller: topicBodyCtrl,
-                                minLines: 3,
-                                maxLines: 15,
-                                cursorColor: theme.mainColor,
-                                validator: (value) {
-                                  if (value != null) {
-                                    if (value.isNotEmpty) {
-                                      return null;
-                                    }
-                                  }
-                                  return "Enter Topic Message";
-                                },
-                                decoration: InputDecoration(
-                                  hintText: "Add message",
-                                  hintStyle: theme.cardBodyTextStyle,
-                                  border: const OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: DocTextEditor(),
                         ),
                       ],
                     ),
@@ -229,14 +179,15 @@ class AddTopicData extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () async {
+                      var mdStr = uiController.markDownStr.value;
                       if (formKey.currentState!.validate()) {
-                        if (title == null && body == null) {
+                        if (title == null && mdStr.isNotEmpty) {
                           Topic newTopic = Topic(
                             topicId:
                                 (DateTime.now().millisecondsSinceEpoch / 1000)
                                     .ceil(),
                             title: topicTitleCtrl.text,
-                            body: topicBodyCtrl.text,
+                            body: mdStr,
                             added:
                                 (DateTime.now().millisecondsSinceEpoch / 1000)
                                     .ceil(),
@@ -245,6 +196,7 @@ class AddTopicData extends StatelessWidget {
                               .add(newTopic);
 
                           topicBodyCtrl.clear();
+                          uiController.markDownStr.value = "";
                           topicTitleCtrl.clear();
                           zeroNetController.userDataObj.nextTopicId += 1;
                           zeroNetController.saveUserData();
@@ -265,7 +217,7 @@ class AddTopicData extends StatelessWidget {
                         } else {
                           EditUserData.editTopic(
                               title: topicTitleCtrl.text,
-                              body: topicBodyCtrl.text,
+                              body: mdStr,
                               topicId: uiController.editableTopicId);
                         }
                         uiController.currentRoute.value = Routes.home;

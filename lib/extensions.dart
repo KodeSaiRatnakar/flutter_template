@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_editor/super_editor.dart';
 
 import 'controllers/site_ui.dart';
 
@@ -82,10 +83,31 @@ extension EditingIcon on EditingButtons {
         return Icons.format_quote;
       case EditingButtons.strikeOut:
         return Icons.strikethrough_s;
+      case EditingButtons.underLine:
+        return Icons.format_underline;
     }
   }
 
-  void onAction() {
-    print(this.toString());
+  NamedAttribution? get getAttribution {
+    switch (this) {
+      case EditingButtons.bold:
+        return boldAttribution;
+      case EditingButtons.italic:
+        return italicsAttribution;
+      case EditingButtons.link:
+        return null;
+      case EditingButtons.heading:
+        return header1Attribution;
+      case EditingButtons.orderedList:
+        return null;
+      case EditingButtons.unOrderredList:
+        return null;
+      case EditingButtons.quotes:
+        return null;
+      case EditingButtons.strikeOut:
+        return strikethroughAttribution;
+      case EditingButtons.underLine:
+        return underlineAttribution;
+    }
   }
 }

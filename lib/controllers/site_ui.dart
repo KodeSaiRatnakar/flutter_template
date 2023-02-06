@@ -23,6 +23,8 @@ class UiController extends GetxController {
   String? editableTopicBody;
   int editableTopicId = 0;
 
+  final markDownStr = ''.obs;
+
   void changeRoute(Routes route) {
     currentRoute.value = route;
   }
@@ -34,7 +36,6 @@ class UiController extends GetxController {
 
 enum Routes {
   home,
-
   topicList,
   topicView,
   topicDetailScreen,
@@ -115,9 +116,9 @@ enum EditingButtons {
   italic,
   link,
   strikeOut,
-
   heading,
   unOrderredList,
   orderedList,
-  quotes
+  quotes,
+  underLine
 }

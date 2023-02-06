@@ -13,7 +13,6 @@ const siteAddr = String.fromEnvironment(
   'SITE_ADDR',
   defaultValue: '1CWBVU1aQfgyeC4FULaJvkaxCUvzmfdNEH',
 );
-int index = 0;
 
 void main() async {
   await init();

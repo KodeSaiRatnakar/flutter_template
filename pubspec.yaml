@@ -15,6 +15,8 @@ dependencies:
   get: ^4.6.5
   provider: ^6.0.5
   zeronet_ws:
+  super_editor: ^0.2.3+1
+  super_editor_markdown: ^0.1.4+1
     
 
 dev_dependencies:
