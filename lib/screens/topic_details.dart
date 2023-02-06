@@ -9,17 +9,17 @@ import '../models/models.dart';
 import '../widgets/buttons.dart';
 
 class TopicDetailScreen extends StatelessWidget {
-  TopicWidgetData topic;
+  final TopicWidgetData topic;
 
-  TopicDetailScreen({required this.topic, Key? key}) : super(key: key);
+  const TopicDetailScreen({required this.topic, Key? key}) : super(key: key);
 
-  List<String> pathString =
-      uiController.listSorting.value.pathString.split(",");
-
-  bool onLikeButtonHover = false;
-  int tempLike = 0;
   @override
   Widget build(BuildContext context) {
+    List<String> pathString =
+        uiController.listSorting.value.pathString.split(",");
+
+    bool onLikeButtonHover = false;
+    int tempLike = 0;
     ThemeData theme = Theme.of(context);
     Size mediaSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -283,15 +283,16 @@ class CommentForm extends StatelessWidget {
   final ThemeData theme;
   final Size mediaSize;
   final String topicUri;
-  CommentForm(
+  const CommentForm(
       {required this.theme,
       required this.mediaSize,
       required this.topicUri,
       super.key});
-  TextEditingController commentTxtCtrl = TextEditingController();
-  GlobalKey<FormState> commentTxtFormKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController commentTxtCtrl = TextEditingController();
+    GlobalKey<FormState> commentTxtFormKey = GlobalKey<FormState>();
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -312,7 +313,7 @@ class CommentForm extends StatelessWidget {
                     "18sgsdfg2sdgh5fghgfh4gh2gfh2fgh4h2dh@cryptoid.bit",
                     style: TextStyle(
                       fontSize: 9,
-                      color: theme.backgroundColor.withOpacity(0.7),
+                      color: theme.colorScheme.background.withOpacity(0.7),
                     ),
                   ),
                 ),
@@ -432,7 +433,7 @@ class CommentList extends StatelessWidget {
                           Text(
                             commentItem.userName,
                             style: TextStyle(
-                              color: theme.backgroundColor,
+                              color: theme.colorScheme.background,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

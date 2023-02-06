@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/models/user_data.dart';
-import 'package:flutter_template/screens/add_topic.dart';
 import '../consts.dart';
 import 'package:get/get.dart';
 import '../controllers/theme.dart';
@@ -34,7 +33,7 @@ class HomePage extends StatelessWidget {
                   mediaSize: mediaSize,
                   themeColor:
                       threadItThemeController.currentTheme.value.mainColor),
-              SearchBarTextField(),
+              const SearchBarTextField(),
               const SizedBox(
                 height: 10,
               ),
@@ -488,16 +487,13 @@ class TopicTile extends StatelessWidget {
   final int index;
   final TopicWidgetData topicData;
 
-  TopicTile({
+  const TopicTile({
     required this.mediaSize,
     required this.topicData,
     required this.index,
     super.key,
     required this.theme,
   });
-
-  bool onLikeButtonHover = false;
-  int tempLike = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -653,12 +649,12 @@ Widget addPost({required ThemeData theme}) {
 }
 
 class SearchBarTextField extends StatelessWidget {
-  SearchBarTextField({super.key});
-  Color themeColor = threadItThemeController.currentTheme.value.mainColor;
-  double searchBarMaxHeight = 50;
+  const SearchBarTextField({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Color themeColor = threadItThemeController.currentTheme.value.mainColor;
+    double searchBarMaxHeight = 50;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Obx(

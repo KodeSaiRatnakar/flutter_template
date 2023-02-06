@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/consts.dart';
 import 'package:flutter_template/controllers/theme.dart';
 import 'package:flutter_template/controllers/zeronet.dart';
-import 'package:flutter_template/extensions.dart';
 import 'package:flutter_template/models/models.dart';
 import 'package:flutter_template/models/user_data.dart';
 import 'package:flutter_template/widgets/text_editor.dart';
@@ -11,18 +10,17 @@ import '../controllers/site_ui.dart';
 import 'package:get/get.dart';
 
 class AddTopicData extends StatelessWidget {
-  AddTopicData({this.title, this.body, super.key});
-  String? title;
-  String? body;
-
-  var items = ["General", "Features", "Bugs"];
-  TextEditingController topicTitleCtrl = TextEditingController();
-  TextEditingController topicBodyCtrl = TextEditingController();
-
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  const AddTopicData({this.title, this.body, super.key});
+  final String? title;
+  final String? body;
 
   @override
   Widget build(BuildContext context) {
+    final items = ["General", "Features", "Bugs"];
+    TextEditingController topicTitleCtrl = TextEditingController();
+    TextEditingController topicBodyCtrl = TextEditingController();
+
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
     SiteTheme theme = threadItThemeController.currentTheme.value;
     topicTitleCtrl.text = title ?? "";
     topicBodyCtrl.text = body ?? "";
@@ -169,7 +167,7 @@ class AddTopicData extends StatelessWidget {
                             ),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: DocTextEditor(),
+                          child: const DocTextEditor(),
                         ),
                       ],
                     ),

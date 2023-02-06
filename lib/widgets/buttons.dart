@@ -64,9 +64,7 @@ class _TopicVoteButtonState extends State<TopicVoteButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: false
-                ? Colors.green
-                : threadItThemeController.currentTheme.value.primaryColor,
+            color: threadItThemeController.currentTheme.value.primaryColor,
             width: 1,
           ),
           color: zeroNetController.userDataObj.topicVote
@@ -128,9 +126,7 @@ class _TopicCommentVoteButtonState extends State<TopicCommentVoteButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: false
-                ? Colors.green
-                : threadItThemeController.currentTheme.value.primaryColor,
+            color: threadItThemeController.currentTheme.value.primaryColor,
             width: 1,
           ),
           color:
