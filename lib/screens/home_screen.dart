@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
               ),
               Obx(
                 () {
-                  sortListTopicData(uiController.homeSceenFilter);
+                  sortListTopicData();
 
                   var _refresh = uiController.filterRefresh.value;
                   return Expanded(
@@ -316,30 +316,31 @@ class CustomAppBar extends StatelessWidget {
                 color: themeColor,
                 size: 30,
               ),
-              onSelected: (String selectedFilter) {
-                if (itemsText.sublist(0, 5).contains(selectedFilter)) {
-                  uiController.homeSceenFilter.removeAt(0);
-                  uiController.homeSceenFilter.insert(0, selectedFilter);
+              onSelected: (SiteFilters selectedFilter) {
+                if (SiteFilters.values.sublist(0, 5).contains(selectedFilter)) {
+                  uiController.siteFilter1.value = selectedFilter;
                 } else {
-                  uiController.homeSceenFilter.removeAt(1);
-                  uiController.homeSceenFilter.insert(1, selectedFilter);
+                  uiController.siteFilter2.value = selectedFilter;
                 }
               },
               itemBuilder: (context) {
-                return itemsText
-                    .map(
-                      (txt) => PopupMenuItem<String>(
-                        value: txt,
-                        child: Text(
-                          txt,
-                          style: TextStyle(
-                              color: uiController.homeSceenFilter.contains(txt)
-                                  ? themeColor
-                                  : Colors.white),
+                return SiteFilters.values.map(
+                  (filter) {
+                    String filterString = filter.filterStr;
+                    return PopupMenuItem<SiteFilters>(
+                      value: filter,
+                      child: Text(
+                        filterString,
+                        style: TextStyle(
+                          color: (uiController.siteFilter1.value == filter ||
+                                  uiController.siteFilter2.value == filter)
+                              ? themeColor
+                              : Colors.white,
                         ),
                       ),
-                    )
-                    .toList();
+                    );
+                  },
+                ).toList();
               },
             ),
             headerIcon(

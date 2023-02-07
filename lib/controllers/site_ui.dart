@@ -13,8 +13,9 @@ class UiController extends GetxController {
   final dropdownvalue = "General".obs;
   var searchController = Rx(TextEditingController());
 
-  final homeSceenFilter = ["Creation", "Normal"].obs;
   var filterRefresh = "".obs;
+  var siteFilter1 = SiteFilters.creation.obs;
+  var siteFilter2 = SiteFilters.normal.obs;
 
   var commentListData = [].obs;
   var isCommetsLoaded = false.obs;
@@ -62,52 +63,69 @@ extension ListSortExt on ListSorting {
   }
 }
 
-const List<String> itemsText = [
-  "LastComment",
-  "Creation",
-  "NR Comments",
-  "NR Votes",
-  "Author",
-  // "Tiny",
-  // "Brief",
-  // "Normal",
-  // "Long",
-  // "Full"
-];
+enum SiteFilters {
+  lastComment,
+  creation,
+  nrComments,
+  nrVotes,
+  author,
+  tiny,
+  brief,
+  normal,
+  long,
+  full
+}
 
-void sortListTopicData(List<String> filterData) {
-  if (filterData[0] == "LastComment") {
-    topicWidgetDataList.sort(
-      (a, b) {
-        int first = a.lastCommentAdded ?? a.added;
-        int second = b.lastCommentAdded ?? b.added;
-        return first.compareTo(second);
-      },
-    );
-  } else if (filterData[0] == "NR Votes") {
-    topicWidgetDataList.sort(
-      (a, b) {
-        return b.votes.compareTo(a.votes);
-      },
-    );
-  } else if (filterData[0] == "NR Comments") {
-    topicWidgetDataList.sort(
-      (a, b) {
-        return b.commentsNum.compareTo(a.commentsNum);
-      },
-    );
-  } else if (filterData[0] == "Creation") {
-    topicWidgetDataList.sort(
-      (a, b) {
-        return b.added.compareTo(a.added);
-      },
-    );
-  } else {
-    topicWidgetDataList.sort(
-      (a, b) {
-        return b.topicCreatorUserName[0].compareTo(a.topicCreatorUserName[0]);
-      },
-    );
+void sortListTopicData() {
+  switch (uiController.siteFilter1.value) {
+    case SiteFilters.lastComment:
+      topicWidgetDataList.sort(
+        (a, b) {
+          int first = a.lastCommentAdded ?? a.added;
+          int second = b.lastCommentAdded ?? b.added;
+          return first.compareTo(second);
+        },
+      );
+      break;
+    case SiteFilters.creation:
+      topicWidgetDataList.sort(
+        (a, b) {
+          return b.added.compareTo(a.added);
+        },
+      );
+      break;
+    case SiteFilters.nrComments:
+      topicWidgetDataList.sort(
+        (a, b) {
+          return b.commentsNum.compareTo(a.commentsNum);
+        },
+      );
+      break;
+    case SiteFilters.nrVotes:
+      topicWidgetDataList.sort(
+        (a, b) {
+          return b.votes.compareTo(a.votes);
+        },
+      );
+      break;
+    case SiteFilters.author:
+      // TODO: Handle this case.
+      break;
+    case SiteFilters.tiny:
+      // TODO: Handle this case.
+      break;
+    case SiteFilters.brief:
+      // TODO: Handle this case.
+      break;
+    case SiteFilters.normal:
+      // TODO: Handle this case.
+      break;
+    case SiteFilters.long:
+      // TODO: Handle this case.
+      break;
+    case SiteFilters.full:
+      // TODO: Handle this case.
+      break;
   }
 }
 

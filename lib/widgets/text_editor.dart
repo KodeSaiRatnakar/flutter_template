@@ -24,6 +24,14 @@ class _DocTextEditorState extends State<DocTextEditor> {
   bool isMarkDownEnabled = false;
   TextEditingController markDownCtrl = TextEditingController();
 
+  void changeMode() {
+    if (isMarkDownEnabled) {
+      initSuperEditor();
+    }
+    isMarkDownEnabled = !isMarkDownEnabled;
+    setState(() {});
+  }
+
   void initSuperEditor() {
     _doc = isMarkDownEnabled
         ? deserializeMarkdownToDocument(markDownCtrl.text)
@@ -153,22 +161,26 @@ class _DocTextEditorState extends State<DocTextEditor> {
                       ),
                     ),
               isMarkDownEnabled ? const Spacer() : const SizedBox(),
-              TextButton(
-                onPressed: () {
-                  if (isMarkDownEnabled) {
-                    initSuperEditor();
-                  }
-                  isMarkDownEnabled = !isMarkDownEnabled;
-                  setState(() {});
-                },
-                child: Text(
-                  isMarkDownEnabled
-                      ? "Switch to Fancy Editor"
-                      : "Markdown\nmode",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 11, color: Colors.white),
-                ),
-              )
+              MediaQuery.of(context).size.width > 900
+                  ? TextButton(
+                      onPressed: changeMode,
+                      child: Text(
+                        isMarkDownEnabled
+                            ? "Switch to Fancy Editor"
+                            : "Switch to Markdown mode",
+                        textAlign: TextAlign.center,
+                        style:
+                            const TextStyle(fontSize: 11, color: Colors.white),
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: changeMode,
+                      icon: Icon(
+                        isMarkDownEnabled
+                            ? Icons.raw_on_outlined
+                            : Icons.raw_off_outlined,
+                      ),
+                    )
             ],
           ),
         ),
@@ -217,22 +229,9 @@ class _DocTextEditorState extends State<DocTextEditor> {
                           stylesheet: defaultStylesheet.copyWith(
                             documentPadding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 5),
-                            rules: [
-                              StyleRule(
-                                const BlockSelector("header1"),
-                                (doc, docNode) {
-                                  return {
-                                    "padding": const CascadingPadding.only(
-                                        top: 5, bottom: 5),
-                                    "textStyle": const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 38,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  };
-                                },
-                              )
-                            ],
+                            rules: SuperEditorBlockSelector.values
+                                .map((e) => e.styleRuleExt)
+                                .toList(),
                           ),
                         ),
                       ],
@@ -359,22 +358,8 @@ class SuperReaderField extends StatelessWidget {
       document: doc,
       stylesheet: defaultStylesheet.copyWith(
         documentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-        rules: [
-          for (var header in SuperEditorBlockSelector.values)
-            StyleRule(
-              BlockSelector(header.strHeader),
-              (doc, docNode) {
-                return {
-                  "padding": const CascadingPadding.only(top: 5, bottom: 5),
-                  "textStyle": TextStyle(
-                    color: Colors.white,
-                    fontSize: header.headerFontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                };
-              },
-            ),
-        ],
+        rules:
+            SuperEditorBlockSelector.values.map((e) => e.styleRuleExt).toList(),
       ),
     );
   }
@@ -386,25 +371,53 @@ enum SuperEditorBlockSelector {
   header3,
   header4,
   header5,
-  header6
+  header6,
+  paragraph,
 }
 
 extension FontSizeExt on SuperEditorBlockSelector {
-  double get headerFontSize {
+  StyleRule get styleRuleExt {
+    double fontSize = 16;
+    FontWeight fontWeight = FontWeight.normal;
+
     switch (this) {
       case SuperEditorBlockSelector.header1:
-        return 38.0;
+        fontSize = 38.0;
+        fontWeight = FontWeight.bold;
+        break;
       case SuperEditorBlockSelector.header2:
-        return 34.0;
+        fontSize = 34.0;
+        break;
       case SuperEditorBlockSelector.header3:
-        return 30.0;
+        fontSize = 30.0;
+        break;
       case SuperEditorBlockSelector.header4:
-        return 26.0;
+        fontSize = 26.0;
+        break;
       case SuperEditorBlockSelector.header5:
-        return 22.0;
+        fontSize = 22.0;
+        break;
       case SuperEditorBlockSelector.header6:
-        return 18.0;
+        fontSize = 20.0;
+        break;
+      case SuperEditorBlockSelector.paragraph:
+        fontSize = 16;
+        break;
     }
+
+    return StyleRule(
+      BlockSelector(strHeader),
+      (doc, docNode) {
+        return {
+          "padding": const CascadingPadding.only(top: 5, bottom: 5),
+          "textStyle": TextStyle(
+            color: Colors.white,
+            fontSize: fontSize,
+            fontWeight: fontWeight,
+          ),
+        };
+      },
+    );
   }
 
   String get strHeader {
@@ -421,6 +434,8 @@ extension FontSizeExt on SuperEditorBlockSelector {
         return 'header5';
       case SuperEditorBlockSelector.header6:
         return 'header6';
+      case SuperEditorBlockSelector.paragraph:
+        return "paragraph";
     }
   }
 }

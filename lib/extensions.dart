@@ -111,3 +111,30 @@ extension EditingIcon on EditingButtons {
     }
   }
 }
+
+extension SiteFiltersExt on SiteFilters {
+  String get filterStr {
+    switch (this) {
+      case SiteFilters.lastComment:
+        return "LastComment";
+      case SiteFilters.creation:
+        return "Creation";
+      case SiteFilters.nrComments:
+        return "NR Comments";
+      case SiteFilters.nrVotes:
+        return "NR Votes";
+      case SiteFilters.author:
+        return "Author";
+      case SiteFilters.tiny:
+        return "Tiny";
+      case SiteFilters.brief:
+        return "Brief";
+      case SiteFilters.normal:
+        return "Normal";
+      case SiteFilters.long:
+        return "Long";
+      case SiteFilters.full:
+        return "Full";
+    }
+  }
+}
