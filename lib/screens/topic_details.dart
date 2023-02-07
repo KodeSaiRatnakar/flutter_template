@@ -7,6 +7,7 @@ import '../controllers/zeronet.dart';
 import '../extensions.dart';
 import '../models/models.dart';
 import '../widgets/buttons.dart';
+import '../widgets/text_editor.dart';
 
 class TopicDetailScreen extends StatelessWidget {
   final TopicWidgetData topic;
@@ -112,10 +113,8 @@ class TopicBody extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            Text(
-              topic.body,
-              style:
-                  threadItThemeController.currentTheme.value.cardBodyTextStyle,
+            SuperReaderField(
+              text: topic.body,
             ),
             const SizedBox(
               height: 15,
@@ -459,16 +458,14 @@ class CommentList extends StatelessWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          TopicCommentVoteButton(commentData: commentItem)
+                          TopicCommentVoteButton(
+                            commentData: commentItem,
+                          )
                         ],
                       ),
                       const SizedBox(height: 15),
-                      Text(
-                        commentItem.commentBody,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      SuperReaderField(
+                        text: commentItem.commentBody,
                       ),
                       const SizedBox(
                         height: 20,

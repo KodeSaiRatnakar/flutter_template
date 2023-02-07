@@ -8,6 +8,7 @@ import '../controllers/zeronet.dart';
 import '../extensions.dart';
 import '../models/models.dart';
 import '../widgets/buttons.dart';
+import '../widgets/text_editor.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -54,12 +55,14 @@ class HomePage extends StatelessWidget {
                             child: HeaderButtons(mediaSize: mediaSize),
                           );
                         }
-                        return TopicTile(
-                          mediaSize: mediaSize,
-                          theme: theme,
-                          topicData: topicWidgetDataList[index - 1],
-                          index: index - 1,
-                        );
+                        if (topicWidgetDataList.isNotEmpty) {
+                          return TopicTile(
+                            mediaSize: mediaSize,
+                            theme: theme,
+                            topicData: topicWidgetDataList[index - 1],
+                            index: index - 1,
+                          );
+                        }
                       },
                     ),
                   );
@@ -526,13 +529,10 @@ class TopicTile extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8.0, bottom: 20),
+                    padding: const EdgeInsets.only(left: 4.0, bottom: 20),
                     child: SizedBox(
-                      child: Text(
-                        topicData.body,
-                        style: threadItThemeController
-                            .currentTheme.value.cardBodyTextStyle,
-                        maxLines: 1,
+                      child: SuperReaderField(
+                        text: topicData.body.split("\n")[0],
                       ),
                     ),
                   ),
