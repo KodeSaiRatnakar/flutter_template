@@ -1,13 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_template/controllers/common.dart';
-import 'package:flutter_template/controllers/theme.dart';
-import 'package:flutter_template/controllers/zeronet.dart';
-import 'package:flutter_template/screens/add_topic.dart';
-import 'package:get/get.dart';
-
-import 'controllers/site_ui.dart';
-import 'screens/home_screen.dart';
-import 'screens/topic_details.dart';
+import 'imports.dart';
 
 const siteAddr = String.fromEnvironment(
   'SITE_ADDR',
@@ -40,30 +31,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        switch (uiController.currentRoute.value) {
-          case Routes.showProgressIndicator:
-            return Scaffold(
-              backgroundColor:
-                  threadItThemeController.currentTheme.value.backGroundColor,
-              body: const Center(child: CircularProgressIndicator()),
-            );
-          case Routes.home:
-            return const HomePage();
-          case Routes.topicDetailScreen:
-            return TopicDetailScreen(
-              topic: topicWidgetDataList[uiController.selectedTopicIndex.value],
-            );
-          case Routes.addTopicData:
-            return AddTopicData(
-              body: uiController.editableTopicBody,
-              title: uiController.editableTopicTitle,
-            );
-          default:
-            return Container();
-        }
-      },
-    );
+    return Obx(() => uiController.currentRoute.value.routeWidget);
   }
 }

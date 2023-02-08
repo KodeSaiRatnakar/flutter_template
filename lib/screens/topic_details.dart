@@ -1,13 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_template/controllers/theme.dart';
-import 'package:flutter_template/models/user_data.dart';
-import 'package:get/get.dart';
-import '../controllers/site_ui.dart';
-import '../controllers/zeronet.dart';
-import '../extensions.dart';
-import '../models/models.dart';
-import '../widgets/buttons.dart';
-import '../widgets/text_editor.dart';
+import '../imports.dart';
 
 class TopicDetailScreen extends StatelessWidget {
   final TopicWidgetData topic;
@@ -167,7 +158,7 @@ class PathButtons extends StatelessWidget {
         TextButton(
           onPressed: () {
             uiController.currentRoute(
-              Routes.home,
+              Routes.kHome,
             );
             zeroNetController.loadTopicWidgetData();
             uiController.changeListSorting(
@@ -195,7 +186,7 @@ class PathButtons extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            uiController.currentRoute.value = Routes.home;
+            uiController.currentRoute.value = Routes.kHome;
           },
           child: Text(
             pathString[1] != " " ? pathString[1] : "",
@@ -250,7 +241,7 @@ class HeadButton extends StatelessWidget {
         GestureDetector(
           onTap: () {
             uiController.currentRoute(
-              Routes.home,
+              Routes.kHome,
             );
             zeroNetController.loadTopicWidgetData();
             uiController.changeListSorting(

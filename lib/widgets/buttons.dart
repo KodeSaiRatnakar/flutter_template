@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../controllers/theme.dart';
-import '../controllers/zeronet.dart';
-import '../models/models.dart';
+import '../imports.dart';
 
 class TopicVoteButton extends StatefulWidget {
   const TopicVoteButton({

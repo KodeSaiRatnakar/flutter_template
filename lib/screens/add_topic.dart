@@ -1,13 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_template/consts.dart';
-import 'package:flutter_template/controllers/theme.dart';
-import 'package:flutter_template/controllers/zeronet.dart';
-import 'package:flutter_template/models/models.dart';
-import 'package:flutter_template/models/user_data.dart';
-import 'package:flutter_template/widgets/text_editor.dart';
-import 'package:zeronet_ws/zeronet_ws.dart';
-import '../controllers/site_ui.dart';
-import 'package:get/get.dart';
+import '../imports.dart';
 
 class AddTopicData extends StatelessWidget {
   const AddTopicData({this.title, this.body, super.key});
@@ -32,7 +23,7 @@ class AddTopicData extends StatelessWidget {
         backgroundColor: theme.primaryColor,
         leading: IconButton(
           onPressed: () {
-            uiController.currentRoute.value = Routes.home;
+            uiController.currentRoute.value = Routes.kHome;
             uiController.editableTopicBody = null;
             uiController.editableTopicTitle = null;
           },
@@ -218,7 +209,7 @@ class AddTopicData extends StatelessWidget {
                               body: mdStr,
                               topicId: uiController.editableTopicId);
                         }
-                        uiController.currentRoute.value = Routes.home;
+                        uiController.currentRoute.value = Routes.kHome;
                         uiController.editableTopicBody = null;
                         uiController.editableTopicTitle = null;
                       }

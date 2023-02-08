@@ -1,13 +1,4 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:zeronet_ws/models/models.dart';
-import '../consts.dart';
-import '../models/user_data.dart';
-import 'package:get/get.dart';
-import '../models/models.dart';
-import 'package:zeronet_ws/zeronet_ws.dart';
-import '../main.dart';
-import 'site_ui.dart';
+import '../imports.dart';
 
 final zeroNetController = Get.put(ZeroNetController());
 
@@ -137,7 +128,7 @@ class ZeroNetController extends GetxController {
   }
 
   Future loadTopicWidgetData({String? id}) async {
-    uiController.currentRoute.value = Routes.showProgressIndicator;
+    uiController.currentRoute.value = Routes.kShowProgressIndicator;
     topicWidgetDataList.clear();
 
     var queryResult = await instance.dbQueryFuture(
@@ -150,7 +141,7 @@ class ZeroNetController extends GetxController {
           TopicWidgetData.fromJson(topic),
         );
       }
-      uiController.currentRoute.value = Routes.home;
+      uiController.currentRoute.value = Routes.kHome;
     }
   }
 

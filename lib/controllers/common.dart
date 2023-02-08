@@ -1,4 +1,4 @@
-import 'package:flutter_template/controllers/zeronet.dart';
+import '../imports.dart';
 
 Future<void> init() async {
   await zeroNetController.connect();

@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_template/controllers/zeronet.dart';
-import 'package:get/get.dart';
+import '../imports.dart';
 
 final uiController = Get.put(UiController());
 
 class UiController extends GetxController {
   final searchStr = "".obs;
-  final currentRoute = Routes.home.obs;
+  final currentRoute = Routes.kHome.obs;
   final isSearchBarSelected = false.obs;
   final selectedTopicIndex = 0.obs;
   final listSorting = ListSorting.home.obs;
@@ -35,15 +33,6 @@ class UiController extends GetxController {
   }
 }
 
-enum Routes {
-  home,
-  topicList,
-  topicView,
-  topicDetailScreen,
-  showProgressIndicator,
-  addTopicData,
-}
-
 enum ListSorting {
   home,
   features,
@@ -61,82 +50,4 @@ extension ListSortExt on ListSorting {
         return "Home, ";
     }
   }
-}
-
-enum SiteFilters {
-  lastComment,
-  creation,
-  nrComments,
-  nrVotes,
-  author,
-  tiny,
-  brief,
-  normal,
-  long,
-  full
-}
-
-void sortListTopicData() {
-  switch (uiController.siteFilter1.value) {
-    case SiteFilters.lastComment:
-      topicWidgetDataList.sort(
-        (a, b) {
-          int first = a.lastCommentAdded ?? a.added;
-          int second = b.lastCommentAdded ?? b.added;
-          return first.compareTo(second);
-        },
-      );
-      break;
-    case SiteFilters.creation:
-      topicWidgetDataList.sort(
-        (a, b) {
-          return b.added.compareTo(a.added);
-        },
-      );
-      break;
-    case SiteFilters.nrComments:
-      topicWidgetDataList.sort(
-        (a, b) {
-          return b.commentsNum.compareTo(a.commentsNum);
-        },
-      );
-      break;
-    case SiteFilters.nrVotes:
-      topicWidgetDataList.sort(
-        (a, b) {
-          return b.votes.compareTo(a.votes);
-        },
-      );
-      break;
-    case SiteFilters.author:
-      // TODO: Handle this case.
-      break;
-    case SiteFilters.tiny:
-      // TODO: Handle this case.
-      break;
-    case SiteFilters.brief:
-      // TODO: Handle this case.
-      break;
-    case SiteFilters.normal:
-      // TODO: Handle this case.
-      break;
-    case SiteFilters.long:
-      // TODO: Handle this case.
-      break;
-    case SiteFilters.full:
-      // TODO: Handle this case.
-      break;
-  }
-}
-
-enum EditingButtons {
-  bold,
-  italic,
-  link,
-  strikeOut,
-  heading,
-  unOrderredList,
-  orderedList,
-  quotes,
-  underLine
 }

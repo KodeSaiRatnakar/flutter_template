@@ -1,10 +1,4 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter_template/controllers/site_ui.dart';
-import 'package:flutter_template/extensions.dart';
-import 'package:super_editor/super_editor.dart';
-import 'package:super_editor_markdown/super_editor_markdown.dart';
-import '../controllers/theme.dart';
+import '../imports.dart';
 
 String mdLinkStr = '';
 
@@ -434,7 +428,7 @@ enum SuperEditorBlockSelector {
   header6,
   paragraph,
   horizontalRule,
-  // image,
+// image,
 }
 
 extension FontSizeExt on SuperEditorBlockSelector {

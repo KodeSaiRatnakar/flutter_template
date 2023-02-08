@@ -1,4 +1,4 @@
-import '../controllers/zeronet.dart';
+import '../imports.dart';
 
 class Topic {
   final int topicId;

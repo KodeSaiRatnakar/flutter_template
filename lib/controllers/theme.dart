@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import '../imports.dart';
 
 ThemeController threadItThemeController = Get.put(ThemeController());
 

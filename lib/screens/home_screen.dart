@@ -1,14 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_template/models/user_data.dart';
-import '../consts.dart';
-import 'package:get/get.dart';
-import '../controllers/theme.dart';
-import '../controllers/site_ui.dart';
-import '../controllers/zeronet.dart';
-import '../extensions.dart';
-import '../models/models.dart';
-import '../widgets/buttons.dart';
-import '../widgets/text_editor.dart';
+import '../imports.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -520,7 +510,7 @@ class TopicTile extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       uiController.selectedTopicIndex.value = index;
-                      uiController.changeRoute(Routes.topicDetailScreen);
+                      uiController.changeRoute(Routes.kTopicDetailScreen);
                       zeroNetController.loadComments(topicData.rowTopicUri);
                     },
                     child: Text(
@@ -615,7 +605,7 @@ class TopicTile extends StatelessWidget {
                         uiController.editableTopicTitle = topicData.title;
                         uiController.editableTopicBody = topicData.body;
                         uiController.editableTopicId = topicData.topicId;
-                        uiController.currentRoute.value = Routes.addTopicData;
+                        uiController.currentRoute.value = Routes.kAddTopicData;
                       } else {
                         EditUserData.deleteTopic(topicId: topicData.topicId);
                       }
@@ -642,7 +632,7 @@ Widget addPost({required ThemeData theme}) {
   return FloatingActionButton(
     backgroundColor: threadItThemeController.currentTheme.value.primaryColor,
     onPressed: () {
-      uiController.currentRoute.value = Routes.addTopicData;
+      uiController.currentRoute.value = Routes.kAddTopicData;
     },
     child: const Icon(
       Icons.add,

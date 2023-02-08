@@ -16,7 +16,7 @@ dependencies:
   provider: 6.0.5
   super_editor: 0.2.3+1
   super_editor_markdown: 0.1.4+1
-    
+  
   zeronet_ws: 1.0.0
 
 dev_dependencies:

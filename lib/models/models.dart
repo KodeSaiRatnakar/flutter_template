@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+import '../imports.dart';
 
 class TopicWidgetData extends Equatable {
   int topicId;

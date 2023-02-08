@@ -1,8 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:super_editor/super_editor.dart';
-
-import 'controllers/site_ui.dart';
-
 extension IntExt on int {
   DateTime get toDate {
     return DateTime.fromMillisecondsSinceEpoch(this);
@@ -61,80 +56,5 @@ extension IntExt on int {
   String get numDatetoStringDate {
     final present = toDate;
     return "${present.month.monthString} ${present.day}, ${present.year}";
-  }
-}
-
-extension EditingIcon on EditingButtons {
-  IconData getEditingIcon() {
-    switch (this) {
-      case EditingButtons.bold:
-        return Icons.format_bold_outlined;
-      case EditingButtons.italic:
-        return Icons.format_italic_outlined;
-      case EditingButtons.link:
-        return Icons.attachment;
-      case EditingButtons.heading:
-        return Icons.title;
-      case EditingButtons.orderedList:
-        return Icons.list;
-      case EditingButtons.unOrderredList:
-        return Icons.list;
-      case EditingButtons.quotes:
-        return Icons.format_quote;
-      case EditingButtons.strikeOut:
-        return Icons.strikethrough_s;
-      case EditingButtons.underLine:
-        return Icons.format_underline;
-    }
-  }
-
-  NamedAttribution? get getAttribution {
-    switch (this) {
-      case EditingButtons.bold:
-        return boldAttribution;
-      case EditingButtons.italic:
-        return italicsAttribution;
-      case EditingButtons.link:
-        return null;
-      case EditingButtons.heading:
-        return header1Attribution;
-      case EditingButtons.orderedList:
-        return null;
-      case EditingButtons.unOrderredList:
-        return null;
-      case EditingButtons.quotes:
-        return null;
-      case EditingButtons.strikeOut:
-        return strikethroughAttribution;
-      case EditingButtons.underLine:
-        return underlineAttribution;
-    }
-  }
-}
-
-extension SiteFiltersExt on SiteFilters {
-  String get filterStr {
-    switch (this) {
-      case SiteFilters.lastComment:
-        return "LastComment";
-      case SiteFilters.creation:
-        return "Creation";
-      case SiteFilters.nrComments:
-        return "NR Comments";
-      case SiteFilters.nrVotes:
-        return "NR Votes";
-      case SiteFilters.author:
-        return "Author";
-      case SiteFilters.tiny:
-        return "Tiny";
-      case SiteFilters.brief:
-        return "Brief";
-      case SiteFilters.normal:
-        return "Normal";
-      case SiteFilters.long:
-        return "Long";
-      case SiteFilters.full:
-        return "Full";
-    }
   }
 }
