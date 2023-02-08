@@ -164,6 +164,23 @@ extension ThemeExt on SiteTheme {
         );
     }
   }
+
+  TextStyle get addLinkTextSyle {
+    switch (this) {
+      case SiteTheme.kDark:
+        return const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        );
+      default:
+        return const TextStyle(
+          color: Color(0xff373844),
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        );
+    }
+  }
 }
 
 class ThemeController extends GetxController {

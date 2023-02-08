@@ -6,6 +6,8 @@ import 'package:super_editor/super_editor.dart';
 import 'package:super_editor_markdown/super_editor_markdown.dart';
 import '../controllers/theme.dart';
 
+String mdLinkStr = '';
+
 class DocTextEditor extends StatefulWidget {
   const DocTextEditor({super.key});
   @override
@@ -29,6 +31,18 @@ class _DocTextEditorState extends State<DocTextEditor> {
       initSuperEditor();
     }
     isMarkDownEnabled = !isMarkDownEnabled;
+    setState(() {});
+  }
+
+  void addUrl() {
+    markDownCtrl.text = markDownCtrl.text + mdLinkStr;
+    changeMode();
+
+    Timer(const Duration(milliseconds: 200), () {
+      changeMode();
+    });
+    showUrlField = false;
+
     setState(() {});
   }
 
@@ -137,21 +151,6 @@ class _DocTextEditorState extends State<DocTextEditor> {
                             onTap: () {
                               toogleEdit(attr);
                               if (currentButton == EditingButtons.link) {
-                                var _node = _docEditor.document.getNodeAt(
-                                        _docEditor.document.nodes.length - 1)
-                                    as TextNode;
-
-                                final text = _node.text;
-
-                                final linkAttribution = LinkAttribution(
-                                    url: Uri.parse("https://google.com"));
-                                text.addAttribution(
-                                  linkAttribution,
-                                  SpanRange(
-                                      start: _node.beginningPosition.offset,
-                                      end: _node.endPosition.offset - 1),
-                                );
-
                                 showUrlField = !showUrlField;
                               }
                               setState(() {});
@@ -241,23 +240,26 @@ class _DocTextEditorState extends State<DocTextEditor> {
                     bottom: 0,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      height: showUrlField ? 100 : 0,
-                      width: mediaWidth,
+                      height: showUrlField ? 140 : 0,
                       color: Colors.black12,
                       child: Visibility(
-                        visible: false,
-                        child: Row(
-                          children: [
-                            SizedBox(
+                        visible: showUrlField,
+                        child: FutureBuilder(
+                          future:
+                              Future.delayed(const Duration(milliseconds: 200)),
+                          builder: (context, snp) {
+                            if (snp.connectionState ==
+                                ConnectionState.waiting) {
+                              return const SizedBox();
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: SizedBox(
                                 width: mediaWidth * 0.5,
-                                child: const LinkTextField()),
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.check,
-                                  color: Colors.amber,
-                                ))
-                          ],
+                                child: LinkTextField(addUrl: addUrl),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -282,65 +284,123 @@ Document _createDocument1() {
         id: "1",
         text: AttributedText(text: ""),
       ),
-      // ParagraphNode(
-      //   id: "test",
-      //   text: AttributedText(
-      //     text: "link",
-      //     spans: AttributedSpans(attributions: [
-      //       SpanMarker(
-      //           attribution: LinkAttribution(url: Uri.parse("google.com")),
-      //           offset: 0,
-      //           markerType: SpanMarkerType.start),
-      //       SpanMarker(
-      //           attribution: LinkAttribution(url: Uri.parse("gooogle.com")),
-      //           offset: 3,
-      //           markerType: SpanMarkerType.end),
-      //     ]),
-      //   ),
-      // ),
     ],
   );
 }
 
 class LinkTextField extends StatelessWidget {
-  const LinkTextField({super.key});
+  Function addUrl;
+  LinkTextField({required this.addUrl, super.key});
+
+  TextEditingController textCtrl = TextEditingController();
+  TextEditingController linkCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     TextEditingController textCtrl = TextEditingController();
     TextEditingController linkCtrl = TextEditingController();
+    TextStyle textStyle =
+        threadItThemeController.currentTheme.value.addLinkTextSyle;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        TextField(
-          controller: textCtrl,
-          cursorColor: Colors.white,
-          style: threadItThemeController.currentTheme.value.commentUserTextStyle
-              .copyWith(fontSize: 18),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0),
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
+        Row(
+          children: [
+            const SizedBox(
+              width: 10,
             ),
-          ),
-        ),
-        TextField(
-          controller: linkCtrl,
-          cursorColor: Colors.white,
-          style: threadItThemeController.currentTheme.value.commentUserTextStyle
-              .copyWith(fontSize: 18),
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(vertical: 0),
-            prefixIcon: IconButton(
-              icon: const Icon(
-                Icons.paste,
-                color: Color(0xff83EFFF),
+            Text("Enter Text", style: textStyle),
+            const SizedBox(
+              width: 20,
+            ),
+            Expanded(
+              child: TextField(
+                controller: textCtrl,
+                cursorColor: Colors.white,
+                style: textStyle,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(
+                    Icons.text_format,
+                    color: Colors.white,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
               ),
-              onPressed: () {},
             ),
-            border: const OutlineInputBorder(
-              borderSide: BorderSide.none,
+            const SizedBox(
+              width: 10,
             ),
-          ),
+          ],
+        ),
+        Row(
+          children: [
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              "Enter Link",
+              style: textStyle,
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            Expanded(
+              child: TextField(
+                controller: linkCtrl,
+                cursorColor: Colors.white,
+                style: textStyle,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  prefixIcon: IconButton(
+                    icon: const Icon(
+                      Icons.paste,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {},
+                  ),
+                  suffixIcon: TextButton(
+                    onPressed: () {
+                      mdLinkStr = "[${textCtrl.text}](${linkCtrl.text})";
+                      addUrl();
+                    },
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(
+                          color: threadItThemeController
+                              .currentTheme.value.mainColor),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+          ],
         ),
       ],
     );
@@ -373,6 +433,8 @@ enum SuperEditorBlockSelector {
   header5,
   header6,
   paragraph,
+  horizontalRule,
+  // image,
 }
 
 extension FontSizeExt on SuperEditorBlockSelector {
@@ -403,6 +465,16 @@ extension FontSizeExt on SuperEditorBlockSelector {
       case SuperEditorBlockSelector.paragraph:
         fontSize = 16;
         break;
+      case SuperEditorBlockSelector.horizontalRule:
+        return StyleRule(
+          BlockSelector(strHeader),
+          (doc, docNode) {
+            return {
+              "padding": const CascadingPadding.symmetric(horizontal: 5),
+              "color": Colors.red
+            };
+          },
+        );
     }
 
     return StyleRule(
@@ -436,6 +508,8 @@ extension FontSizeExt on SuperEditorBlockSelector {
         return 'header6';
       case SuperEditorBlockSelector.paragraph:
         return "paragraph";
+      case SuperEditorBlockSelector.horizontalRule:
+        return "horizontalRule";
     }
   }
 }

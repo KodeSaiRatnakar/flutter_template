@@ -190,8 +190,9 @@ class ZeroNetController extends GetxController {
   }
 
   Future saveUserData() async {
+    String userPath = "data/users/${siteInfo.authAddress}";
     var userFile = await instance.fileWriteFuture(
-      "data/users/${siteInfo.authAddress}/data.json",
+      "$userPath/data.json",
       base64.encode(
         utf8.encode(
           json.encode(
@@ -202,7 +203,10 @@ class ZeroNetController extends GetxController {
     );
 
     if (userFile.isMsg) {
-      //print("success");
+      await instance.sitePublishFuture(
+        sign: true,
+        inner_path: "$userPath/content.json",
+      );
     } else {
       print(userFile.error);
     }
